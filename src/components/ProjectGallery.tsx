@@ -71,19 +71,23 @@ const initialProjects = [
 const ProjectGallery: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(3);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [direction, setDirection] = useState(1);
 
   const N = initialProjects.length;
 
   const handleNext = () => {
+    setDirection(1);
     setActiveIndex(prev => (prev + 1) % N);
   };
 
   const handlePrev = () => {
+    setDirection(-1);
     setActiveIndex(prev => (prev - 1 + N) % N);
   };
 
   const handleCardClick = (originalIndex: number, visualIndex: number) => {
     if (visualIndex !== 0) {
+      setDirection(1);
       setActiveIndex(originalIndex);
     }
   };
@@ -156,7 +160,7 @@ const ProjectGallery: React.FC = () => {
           >
             <button 
               onClick={handlePrev} 
-              className="w-10 h-10 rounded-md flex items-center justify-center bg-[#f0ebff] dark:bg-indigo-900/50 hover:bg-[#e0d6ff] dark:hover:bg-indigo-800/50 text-[#635bff] dark:text-indigo-400 transition-colors"
+              className="w-10 h-10 rounded-md flex items-center justify-center bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 text-slate-600 dark:text-slate-300 border border-transparent hover:border-brand-500 shadow-sm transition-colors"
               aria-label="Previous Project"
             >
               <ArrowLeft className="w-5 h-5" />
@@ -176,7 +180,7 @@ const ProjectGallery: React.FC = () => {
           className="flex w-full h-[400px] md:h-[520px] gap-2 md:gap-3 overflow-hidden py-4 relative"
           onMouseLeave={() => setHoveredIndex(null)}
         >
-          <AnimatePresence mode="popLayout" initial={false}>
+          <AnimatePresence mode="popLayout" custom={direction} initial={false}>
             {renderedProjects.map((project) => {
               const visualIndex = project.visualIndex;
               const isHero = visualIndex === 0;
@@ -185,10 +189,25 @@ const ProjectGallery: React.FC = () => {
                 <motion.div
                   key={project.id}
                   layout
+                  custom={direction}
+                  variants={{
+                    initial: (d: number) => ({
+                      opacity: 0,
+                      x: d > 0 ? 100 : -100,
+                    }),
+                    exit: (d: number) => ({
+                      opacity: 0,
+                      x: d > 0 ? -300 : 300,
+                    })
+                  }}
+                  initial="initial"
                   animate={{
+                    opacity: 1,
+                    x: 0,
                     flexGrow: getFlexGrow(visualIndex),
                   }}
-                  transition={{ type: "spring", stiffness: 300, damping: 32 }}
+                  exit="exit"
+                  transition={{ type: "spring", stiffness: 120, damping: 24 }}
                   style={{
                     flexBasis: 0,
                     minWidth: 0,
