@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, ArrowRight, ArrowLeft, X } from 'lucide-react';
+import { ArrowRight, ArrowLeft } from 'lucide-react';
 
 const initialProjects = [
   {
@@ -69,8 +69,7 @@ const initialProjects = [
 ];
 
 const ProjectGallery: React.FC = () => {
-  const [activeIndex, setActiveIndex] = useState(3); // Health Tracking App initially
-  const [selectedProject, setSelectedProject] = useState<typeof initialProjects[0] | null>(null);
+  const [activeIndex, setActiveIndex] = useState(3);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const N = initialProjects.length;
@@ -84,18 +83,13 @@ const ProjectGallery: React.FC = () => {
   };
 
   const handleCardClick = (originalIndex: number, visualIndex: number) => {
-    if (visualIndex === 3) {
-      // Active Hero card clicked: Open modal
-      setSelectedProject(initialProjects[originalIndex]);
-    } else {
-      // Shift clicked card so it becomes the Hero card at slot index 3
+    if (visualIndex !== 0) {
       setActiveIndex(originalIndex);
     }
   };
 
-  // Rotate initialProjects so that whichever project is activeIndex is always rendered at visual slot index 3
-  const renderedProjects = Array.from({ length: N }, (_, visualIndex) => {
-    const originalIndex = (activeIndex + (visualIndex - 3) + N) % N;
+  const renderedProjects = Array.from({ length: 7 }, (_, visualIndex) => {
+    const originalIndex = (activeIndex + visualIndex) % N;
     return {
       ...initialProjects[originalIndex],
       originalIndex,
@@ -103,37 +97,34 @@ const ProjectGallery: React.FC = () => {
     };
   });
 
-  // Dynamically assign classes containing structural layout and scaling values to avoid snappings/rounding jitters
-  const getCardClassName = (vIndex: number) => {
-    const baseClass = "relative h-full overflow-hidden cursor-pointer group rounded-2xl bg-gray-950/40 backdrop-blur-md border border-white/10 shadow-lg";
-    
-    // Left Columns (slots 0, 1, 2) - Fixed baseline narrow strips
-    if (vIndex < 3) {
-      return `${baseClass} flex-[1.2] min-w-[50px] md:min-w-[60px]`;
+  const getFlexGrow = (vIndex: number) => {
+    const defaults = [20, 4, 2, 1, 0.2, 0.2, 0.2];
+
+    if (hoveredIndex === 0) {
+      if (vIndex === 0) return 23;
+      if (vIndex === 1) return 3;
+      if (vIndex === 2) return 1.5;
+      if (vIndex === 3) return 0.75;
+      return 0.2;
     }
-    
-    // Hero Column (slot 3) - Primary active card (shrinks when a middle card is hovered)
-    if (vIndex === 3) {
-      const isMiddleHovered = hoveredIndex !== null && hoveredIndex >= 4 && hoveredIndex <= 6;
-      const heroFlex = isMiddleHovered 
-        ? "flex-[8] min-w-[300px] md:min-w-[40%]" 
-        : "flex-[12] min-w-[350px] md:min-w-[50%]";
-      return `${baseClass} ${heroFlex}`;
-    }
-    
-    // Middle Columns (slots 4, 5, 6) - Interactive stack
-    if (vIndex >= 4 && vIndex <= 6) {
-      if (hoveredIndex === vIndex) {
-        return `${baseClass} flex-[6] min-w-[150px] md:min-w-[200px]`;
+
+    if (hoveredIndex !== null && hoveredIndex !== 0) {
+      if (vIndex === hoveredIndex) {
+        if (hoveredIndex === 1) return 5;
+        if (hoveredIndex === 2) return 3;
+        if (hoveredIndex === 3) return 2;
+        if (hoveredIndex >= 4) return 0.4;
       }
-      if (hoveredIndex !== null && hoveredIndex >= 4 && hoveredIndex <= 6) {
-        return `${baseClass} flex-[2] min-w-[80px] md:min-w-[100px]`;
+      if (vIndex === 0) {
+        if (hoveredIndex === 1) return 19;
+        if (hoveredIndex === 2) return 19;
+        if (hoveredIndex === 3) return 19;
+        if (hoveredIndex >= 4) return 19.8;
       }
-      return `${baseClass} flex-[3] min-w-[100px] md:min-w-[130px]`;
+      return defaults[vIndex];
     }
-    
-    // Hint Columns (slots 7, 8) - Fixed razor-thin visuals
-    return `${baseClass} flex-[0.4] min-w-[16px] md:min-w-[24px] max-w-[24px]`;
+
+    return defaults[vIndex];
   };
 
   return (
@@ -141,21 +132,21 @@ const ProjectGallery: React.FC = () => {
       <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header and Controls */}
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex items-end justify-between mb-8">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="max-w-2xl"
           >
-            <h2 className="text-brand-500 font-semibold tracking-wide uppercase text-sm mb-2 block">Portfolio</h2>
-            <h3 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white">
-              Selected Works
-            </h3>
+            <h2 className="text-[28px] md:text-[32px] leading-tight font-medium text-slate-900 dark:text-white tracking-tight">
+              What’s happening
+            </h2>
+            <p className="text-[20px] md:text-[22px] text-slate-500 dark:text-slate-400 tracking-tight">
+              See the latest from Stripe.
+            </p>
           </motion.div>
           
-          {/* Minimalist Navigation Arrows at Top Right */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -165,49 +156,51 @@ const ProjectGallery: React.FC = () => {
           >
             <button 
               onClick={handlePrev} 
-              className="w-10 h-10 rounded-md flex items-center justify-center bg-slate-100 dark:bg-gray-900 border border-slate-200 dark:border-gray-800 text-slate-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-gray-850 active:scale-95 transition-all"
+              className="w-10 h-10 rounded-md flex items-center justify-center bg-[#f0ebff] dark:bg-indigo-900/50 hover:bg-[#e0d6ff] dark:hover:bg-indigo-800/50 text-[#635bff] dark:text-indigo-400 transition-colors"
               aria-label="Previous Project"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-5 h-5" />
             </button>
             <button 
               onClick={handleNext} 
-              className="w-10 h-10 rounded-md flex items-center justify-center bg-[#0ea5e9] text-white hover:bg-[#0284c7] active:scale-95 transition-all shadow-md shadow-cyan-500/10"
+              className="w-10 h-10 rounded-md flex items-center justify-center bg-[#f0ebff] dark:bg-indigo-900/50 hover:bg-[#e0d6ff] dark:hover:bg-indigo-800/50 text-[#635bff] dark:text-indigo-400 transition-colors"
               aria-label="Next Project"
             >
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-5 h-5" />
             </button>
           </motion.div>
         </div>
 
         {/* Asymmetrical Accordion Carousel */}
         <div 
-          className="flex w-full h-[500px] md:h-[650px] gap-3 md:gap-4 overflow-hidden py-4 relative"
+          className="flex w-full h-[400px] md:h-[520px] gap-2 md:gap-3 overflow-hidden py-4 relative"
           onMouseLeave={() => setHoveredIndex(null)}
         >
           <AnimatePresence mode="popLayout" initial={false}>
             {renderedProjects.map((project) => {
               const visualIndex = project.visualIndex;
-              const isHero = visualIndex === 3;
+              const isHero = visualIndex === 0;
               
               return (
                 <motion.div
                   key={project.id}
                   layout
+                  animate={{
+                    flexGrow: getFlexGrow(visualIndex),
+                  }}
                   transition={{ type: "spring", stiffness: 300, damping: 32 }}
+                  style={{
+                    flexBasis: 0,
+                    minWidth: 0,
+                  }}
                   onClick={() => handleCardClick(project.originalIndex, visualIndex)}
                   onMouseEnter={() => {
-                    // Only trigger hovers for interactive Slots (3, 4, 5, 6)
-                    if (visualIndex >= 3 && visualIndex <= 6) {
-                      setHoveredIndex(visualIndex);
-                    } else {
-                      setHoveredIndex(null);
-                    }
+                    setHoveredIndex(visualIndex);
                   }}
-                  className={getCardClassName(visualIndex)}
+                  className="relative h-full overflow-hidden cursor-pointer rounded-xl bg-slate-100 dark:bg-gray-900"
                 >
                   
-                  {/* Image Mask (completely static centering, un-warped on scale transitions) */}
+                  {/* Image Mask */}
                   <div className="absolute inset-0 w-full h-full overflow-hidden">
                     <img 
                       src={project.image} 
@@ -216,54 +209,25 @@ const ProjectGallery: React.FC = () => {
                     />
                   </div>
                   
-                  {/* Gradient / Glassmorphic Overlays */}
-                  <div 
-                    className={`absolute inset-0 transition-opacity duration-300 rounded-2xl z-0 ${
-                      isHero 
-                        ? 'bg-gradient-to-t from-black/95 via-black/40 to-black/15' 
-                        : 'bg-black/45'
-                    }`} 
-                  />
+                  {/* Subtle gradient on Hero card just to ensure text readability against arbitrary images */}
+                  {isHero && (
+                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+                  )}
                   
-                  {/* Hero Card Contents (Slot 3) */}
+                  {/* Hero Card Contents */}
                   {isHero && (
                     <motion.div 
                       layout
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
                       transition={{ delay: 0.1 }}
-                      className="absolute bottom-0 left-0 p-8 md:p-12 w-full flex flex-col items-start justify-end text-left z-10"
+                      className="absolute bottom-0 left-0 p-8 w-full flex flex-col items-start justify-end text-left z-10 pointer-events-none"
                     >
-                      <span className="text-xs font-bold tracking-widest text-[#0ea5e9] uppercase mb-1.5 block">
-                        {project.category}
-                      </span>
-                      <h4 className="text-white text-3xl md:text-5xl font-bold mb-3 tracking-tight leading-tight">
-                        {project.title}
+                      <h4 className="text-white text-[28px] md:text-[34px] font-normal tracking-tight leading-[1.1] max-w-[80%]">
+                        {project.title.split(' ').slice(0, -1).join(' ')}<br/>
+                        {project.title.split(' ').slice(-1)}
                       </h4>
-                      <p className="text-gray-300 text-xs md:text-sm max-w-xl mb-6 leading-relaxed">
-                        {project.description}
-                      </p>
-                      
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedProject(project);
-                        }}
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-[#0ea5e9] text-white font-medium hover:bg-[#0284c7] hover:scale-105 active:scale-95 transition-all text-sm shadow-md shadow-cyan-500/20"
-                      >
-                        View Project Details
-                        <ExternalLink className="w-4 h-4" />
-                      </button>
                     </motion.div>
-                  )}
-                  
-                  {/* Persistent Rotated Uppercase Labels (Slots 0,1,2 and 4,5,6) */}
-                  {!isHero && visualIndex !== 7 && visualIndex !== 8 && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-                      <span className="text-white font-bold tracking-widest uppercase whitespace-nowrap -rotate-90 origin-center text-xs md:text-sm drop-shadow-md select-none">
-                        {project.title}
-                      </span>
-                    </div>
                   )}
                   
                 </motion.div>
@@ -272,68 +236,6 @@ const ProjectGallery: React.FC = () => {
           </AnimatePresence>
         </div>
       </div>
-
-      {/* Modal Popup Details */}
-      <AnimatePresence>
-        {selectedProject && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedProject(null)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            />
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", damping: 20, stiffness: 100, mass: 1 }}
-              className="relative w-full max-w-4xl bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row z-10 border border-slate-200 dark:border-gray-800"
-            >
-              <button 
-                onClick={() => setSelectedProject(null)}
-                className="absolute top-4 right-4 z-20 p-2 bg-black/20 hover:bg-black/40 text-white rounded-md backdrop-blur-md transition-colors"
-                aria-label="Close modal"
-              >
-                <X className="w-6 h-6" />
-              </button>
-              
-              <div className="w-full md:w-1/2 h-64 md:h-[500px] relative">
-                <img 
-                  src={selectedProject.image} 
-                  alt={selectedProject.title}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              </div>
-              
-              <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                <span className="text-[#0ea5e9] font-bold tracking-wider uppercase text-sm mb-2">
-                  {selectedProject.category}
-                </span>
-                <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-6">
-                  {selectedProject.title}
-                </h3>
-                <p className="text-slate-600 dark:text-gray-300 text-sm md:text-base leading-relaxed mb-10">
-                  {selectedProject.description} 
-                  <br/><br/>
-                  This project demonstrates modern design principles, clean architecture, and responsive execution. Built using high-performance components to ensure a premium user experience and seamless interactions.
-                </p>
-                
-                <a 
-                  href="#" 
-                  onClick={(e) => e.preventDefault()}
-                  className="inline-flex justify-center items-center gap-2 px-8 py-4 rounded-md bg-[#0ea5e9] text-white font-medium hover:bg-[#0284c7] transition-colors w-full shadow-md shadow-cyan-500/10"
-                >
-                  Visit Live Site
-                  <ExternalLink className="w-5 h-5" />
-                </a>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </section>
   );
 };
