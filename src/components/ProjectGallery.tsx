@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft, X, ExternalLink } from 'lucide-react';
 
 const initialProjects = [
   {
@@ -72,6 +72,7 @@ const ProjectGallery: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(3);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [direction, setDirection] = useState(1);
+  const [selectedProject, setSelectedProject] = useState<typeof initialProjects[0] | null>(null);
 
   const N = initialProjects.length;
 
@@ -85,11 +86,8 @@ const ProjectGallery: React.FC = () => {
     setActiveIndex(prev => (prev - 1 + N) % N);
   };
 
-  const handleCardClick = (originalIndex: number, visualIndex: number) => {
-    if (visualIndex !== 0) {
-      setDirection(1);
-      setActiveIndex(originalIndex);
-    }
+  const handleCardClick = (project: typeof initialProjects[0]) => {
+    setSelectedProject(project);
   };
 
   const renderedProjects = Array.from({ length: 7 }, (_, visualIndex) => {
@@ -212,7 +210,7 @@ const ProjectGallery: React.FC = () => {
                     flexBasis: 0,
                     minWidth: 0,
                   }}
-                  onClick={() => handleCardClick(project.originalIndex, visualIndex)}
+                  onClick={() => handleCardClick(project)}
                   onMouseEnter={() => {
                     setHoveredIndex(visualIndex);
                   }}
@@ -255,6 +253,71 @@ const ProjectGallery: React.FC = () => {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Project Details Modal */}
+      <AnimatePresence>
+        {selectedProject && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedProject(null)}
+              className="absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm cursor-pointer"
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-4xl bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] z-10"
+            >
+              <button
+                onClick={() => setSelectedProject(null)}
+                className="absolute top-4 right-4 z-20 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full backdrop-blur-md transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="relative w-full h-64 sm:h-80 lg:h-96 shrink-0">
+                <img 
+                  src={selectedProject.image} 
+                  alt={selectedProject.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              <div className="p-8 sm:p-10 overflow-y-auto">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="px-3 py-1 bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-sm font-medium rounded-full border border-brand-100 dark:border-brand-500/20">
+                    {selectedProject.category}
+                  </span>
+                </div>
+                <h3 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+                  {selectedProject.title}
+                </h3>
+                <p className="text-lg text-slate-600 dark:text-gray-300 mb-8 leading-relaxed">
+                  {selectedProject.description}
+                  <br /><br />
+                  This project features a fully responsive design, seamless animations, and is optimized for peak performance across all devices. We implemented custom solutions to handle complex state management, real-time data synchronization, and secure backend processing to deliver a flawless user experience.
+                </p>
+                
+                <div className="flex gap-4">
+                  <a 
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                    className="inline-flex items-center justify-center px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg transition-colors gap-2 shadow-sm"
+                  >
+                    Visit Website
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
