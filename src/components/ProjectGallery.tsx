@@ -160,14 +160,14 @@ const ProjectGallery: React.FC = () => {
           >
             <button 
               onClick={handlePrev} 
-              className="w-10 h-10 rounded-md flex items-center justify-center bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 text-slate-600 dark:text-slate-300 border border-transparent hover:border-brand-500 shadow-sm transition-colors"
+              className="w-10 h-10 rounded-md flex items-center justify-center bg-brand-600 hover:bg-brand-700 text-white border border-transparent shadow-sm transition-colors"
               aria-label="Previous Project"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <button 
               onClick={handleNext} 
-              className="w-10 h-10 rounded-md flex items-center justify-center bg-[#f0ebff] dark:bg-indigo-900/50 hover:bg-[#e0d6ff] dark:hover:bg-indigo-800/50 text-[#635bff] dark:text-indigo-400 transition-colors"
+              className="w-10 h-10 rounded-md flex items-center justify-center bg-white dark:bg-gray-900 hover:bg-slate-50 dark:hover:bg-gray-800 border border-transparent hover:border-brand-500 text-black dark:text-white shadow-sm transition-colors"
               aria-label="Next Project"
             >
               <ArrowRight className="w-5 h-5" />
