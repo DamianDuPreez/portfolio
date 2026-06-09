@@ -69,64 +69,66 @@ const initialProjects = [
 ];
 
 const ProjectGallery: React.FC = () => {
-  const [activeIndex, setActiveIndex] = useState(3);
+  const [absoluteIndex, setAbsoluteIndex] = useState(3);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [direction, setDirection] = useState(1);
   const [selectedProject, setSelectedProject] = useState<typeof initialProjects[0] | null>(null);
-
+  
   const N = initialProjects.length;
 
   const handleNext = () => {
     setDirection(1);
-    setActiveIndex(prev => (prev + 1) % N);
+    setAbsoluteIndex(prev => prev + 1);
   };
 
   const handlePrev = () => {
     setDirection(-1);
-    setActiveIndex(prev => (prev - 1 + N) % N);
+    setAbsoluteIndex(prev => prev - 1);
   };
 
-  const handleCardClick = (project: typeof initialProjects[0], originalIndex: number, visualIndex: number) => {
+  const handleCardClick = (project: typeof initialProjects[0], visualIndex: number) => {
     if (visualIndex === 0) {
       setSelectedProject(project);
     } else {
       setDirection(1);
-      setActiveIndex(originalIndex);
+      setAbsoluteIndex(prev => prev + visualIndex);
     }
   };
 
   const renderedProjects = Array.from({ length: 7 }, (_, visualIndex) => {
-    const originalIndex = (activeIndex + visualIndex) % N;
+    const currentAbsIndex = absoluteIndex + visualIndex;
+    const originalIndex = ((currentAbsIndex % N) + N) % N;
     return {
       ...initialProjects[originalIndex],
       originalIndex,
-      visualIndex
+      visualIndex,
+      absoluteIndex: currentAbsIndex
     };
   });
 
   const getFlexGrow = (vIndex: number) => {
-    const defaults = [20, 4, 2, 1, 0.2, 0.2, 0.2];
+    const defaults = [2000, 400, 200, 100, 20, 20, 20];
 
     if (hoveredIndex === 0) {
-      if (vIndex === 0) return 23;
-      if (vIndex === 1) return 3;
-      if (vIndex === 2) return 1.5;
-      if (vIndex === 3) return 0.75;
-      return 0.2;
+      if (vIndex === 0) return 2300;
+      if (vIndex === 1) return 300;
+      if (vIndex === 2) return 150;
+      if (vIndex === 3) return 75;
+      return 20;
     }
 
     if (hoveredIndex !== null && hoveredIndex !== 0) {
       if (vIndex === hoveredIndex) {
-        if (hoveredIndex === 1) return 5;
-        if (hoveredIndex === 2) return 3;
-        if (hoveredIndex === 3) return 2;
-        if (hoveredIndex >= 4) return 0.4;
+        if (hoveredIndex === 1) return 500;
+        if (hoveredIndex === 2) return 300;
+        if (hoveredIndex === 3) return 200;
+        if (hoveredIndex >= 4) return 40;
       }
       if (vIndex === 0) {
-        if (hoveredIndex === 1) return 19;
-        if (hoveredIndex === 2) return 19;
-        if (hoveredIndex === 3) return 19;
-        if (hoveredIndex >= 4) return 19.8;
+        if (hoveredIndex === 1) return 1900;
+        if (hoveredIndex === 2) return 1900;
+        if (hoveredIndex === 3) return 1900;
+        if (hoveredIndex >= 4) return 1980;
       }
       return defaults[vIndex];
     }
@@ -180,42 +182,39 @@ const ProjectGallery: React.FC = () => {
 
         {/* Asymmetrical Accordion Carousel */}
         <div 
-          className="flex w-full h-[400px] md:h-[520px] gap-2 md:gap-3 overflow-hidden py-4 relative"
+          className="flex w-full h-[400px] md:h-[520px] gap-3 overflow-hidden py-4 relative"
           onMouseLeave={() => setHoveredIndex(null)}
         >
-          <AnimatePresence mode="popLayout" custom={direction} initial={false}>
-            {renderedProjects.map((project) => {
-              const visualIndex = project.visualIndex;
+          <AnimatePresence custom={direction}>
+            {renderedProjects.map((project, visualIndex) => {
               const isHero = visualIndex === 0;
               
               return (
                 <motion.div
-                  key={project.id}
-                  layout
+                  key={project.absoluteIndex}
                   custom={direction}
                   variants={{
-                    initial: (d: number) => ({
-                      opacity: 0,
-                      x: d > 0 ? 100 : -100,
-                    }),
-                    exit: (d: number) => ({
-                      opacity: 0,
-                      x: d > 0 ? -300 : 300,
-                    })
+                    initial: {
+                      flexGrow: 0,
+                      marginRight: "-0.75rem",
+                    },
+                    exit: {
+                      flexGrow: 0,
+                      marginRight: "-0.75rem",
+                    }
                   }}
                   initial="initial"
                   animate={{
-                    opacity: 1,
-                    x: 0,
                     flexGrow: getFlexGrow(visualIndex),
+                    marginRight: "0rem",
                   }}
                   exit="exit"
-                  transition={{ type: "spring", stiffness: 120, damping: 24 }}
+                  transition={{ type: "tween", ease: "easeInOut", duration: 0.6 }}
                   style={{
                     flexBasis: 0,
                     minWidth: 0,
                   }}
-                  onClick={() => handleCardClick(project, project.originalIndex, visualIndex)}
+                  onClick={() => handleCardClick(project, visualIndex)}
                   onMouseEnter={() => {
                     setHoveredIndex(visualIndex);
                   }}
@@ -227,7 +226,7 @@ const ProjectGallery: React.FC = () => {
                     <img 
                       src={project.image} 
                       alt={project.title}
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 min-w-[900px] h-full object-cover object-center max-w-none pointer-events-none select-none"
+                      className="absolute left-0 top-0 min-w-[1200px] h-full object-cover object-left max-w-none pointer-events-none select-none"
                     />
                   </div>
                   
