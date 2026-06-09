@@ -86,8 +86,13 @@ const ProjectGallery: React.FC = () => {
     setActiveIndex(prev => (prev - 1 + N) % N);
   };
 
-  const handleCardClick = (project: typeof initialProjects[0]) => {
-    setSelectedProject(project);
+  const handleCardClick = (project: typeof initialProjects[0], originalIndex: number, visualIndex: number) => {
+    if (visualIndex === 0) {
+      setSelectedProject(project);
+    } else {
+      setDirection(1);
+      setActiveIndex(originalIndex);
+    }
   };
 
   const renderedProjects = Array.from({ length: 7 }, (_, visualIndex) => {
@@ -210,7 +215,7 @@ const ProjectGallery: React.FC = () => {
                     flexBasis: 0,
                     minWidth: 0,
                   }}
-                  onClick={() => handleCardClick(project)}
+                  onClick={() => handleCardClick(project, project.originalIndex, visualIndex)}
                   onMouseEnter={() => {
                     setHoveredIndex(visualIndex);
                   }}
