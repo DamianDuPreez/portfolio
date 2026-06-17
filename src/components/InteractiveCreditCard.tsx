@@ -1,10 +1,52 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 
 const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "" }) => {
   const { palette } = useTheme();
   const ref = useRef<HTMLDivElement>(null);
+
+  const path1Ref = useRef<SVGPathElement>(null);
+  const path2Ref = useRef<SVGPathElement>(null);
+  const path3Ref = useRef<SVGPathElement>(null);
+
+  useEffect(() => {
+    let animationFrameId: number;
+    let time = 0;
+
+    const render = () => {
+      time += 0.015; // Fluid speed
+
+      // Generate mathematical sine wave paths for true fluid liquid effect
+      const getWavePath = (baseX: number, freq: number, amp: number, phase: number) => {
+        let path = `M 400 0 L ${baseX + Math.sin(phase) * amp} 0`;
+        // Tighter step resolution (5px) for perfect curves
+        for (let y = 5; y <= 250; y += 5) {
+          // Compound sine waves for organic, non-repeating water ripple behavior
+          const x = baseX + Math.sin(y * freq + phase) * amp + Math.cos(y * freq * 0.6 + phase * 1.3) * (amp * 0.4);
+          path += ` L ${x} ${y}`;
+        }
+        path += ` L 400 250 Z`; // Fill everything to the right side
+        return path;
+      };
+
+      if (path3Ref.current) {
+        path3Ref.current.setAttribute('d', getWavePath(250, 0.012, 18, time * 1.2));
+      }
+      if (path2Ref.current) {
+        path2Ref.current.setAttribute('d', getWavePath(265, 0.015, 14, time * 0.9 + 2));
+      }
+      if (path1Ref.current) {
+        path1Ref.current.setAttribute('d', getWavePath(280, 0.01, 20, time * 1.4 + 4));
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
 
   // Mouse position values
   const x = useMotionValue(0);
@@ -74,46 +116,25 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
 
         {/* Organic Liquid Wave Accenting Section (Right 30% with Parallax Depth) */}
         <svg viewBox="0 0 400 250" preserveAspectRatio="none" className="absolute inset-0 z-0 w-full h-full pointer-events-none drop-shadow-2xl">
-          {/* Layer 3: Back-most translucent wave (Theme Tinted) */}
-          <motion.path 
-            animate={{
-              d: [
-                "M 230 0 C 180 80, 270 170, 220 250 L 400 250 L 400 0 Z",
-                "M 250 0 C 290 90, 200 160, 260 250 L 400 250 L 400 0 Z",
-                "M 220 0 C 260 100, 290 150, 230 250 L 400 250 L 400 0 Z",
-                "M 230 0 C 180 80, 270 170, 220 250 L 400 250 L 400 0 Z"
-              ]
-            }}
-            transition={{ duration: 7, ease: "easeInOut", repeat: Infinity }}
-            fill={palette.primary}
-            opacity={0.4}
+          {/* Layer 3: Back-most translucent wave */}
+          <path 
+            ref={path3Ref}
+            fill="#ffffff"
+            opacity={0.2}
+            style={{ mixBlendMode: 'screen' }}
           />
           
           {/* Layer 2: Mid wave (Semi-transparent white) */}
-          <motion.path 
-            animate={{
-              d: [
-                "M 250 0 C 200 90, 290 160, 240 250 L 400 250 L 400 0 Z",
-                "M 270 0 C 310 100, 230 180, 280 250 L 400 250 L 400 0 Z",
-                "M 240 0 C 250 80, 320 170, 250 250 L 400 250 L 400 0 Z",
-                "M 250 0 C 200 90, 290 160, 240 250 L 400 250 L 400 0 Z"
-              ]
-            }}
-            transition={{ duration: 6, ease: "easeInOut", repeat: Infinity }}
-            fill="rgba(255,255,255,0.4)"
+          <path 
+            ref={path2Ref}
+            fill="#ffffff"
+            opacity={0.4}
+            style={{ mixBlendMode: 'screen' }}
           />
 
           {/* Layer 1: Front-most Base Wave (Solid White, crisp edge) */}
-          <motion.path 
-            animate={{
-              d: [
-                "M 280 0 C 230 80, 320 170, 270 250 L 400 250 L 400 0 Z",
-                "M 260 0 C 310 90, 240 160, 290 250 L 400 250 L 400 0 Z",
-                "M 290 0 C 240 100, 330 150, 260 250 L 400 250 L 400 0 Z",
-                "M 280 0 C 230 80, 320 170, 270 250 L 400 250 L 400 0 Z"
-              ]
-            }}
-            transition={{ duration: 8, ease: "easeInOut", repeat: Infinity }}
+          <path 
+            ref={path1Ref}
             fill="#ffffff" 
           />
         </svg>
