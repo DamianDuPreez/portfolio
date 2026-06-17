@@ -63,6 +63,23 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
           className="absolute inset-0 z-0 opacity-90 transition-colors duration-[1500ms]"
           style={{ background: `linear-gradient(135deg, ${palette.primary}, ${palette.secondary})` }}
         />
+
+        {/* Dynamic Looping Shimmer Layer */}
+        <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
+          <motion.div
+            className="absolute top-0 bottom-0 w-full"
+            animate={{ left: ['-100%', '200%'] }}
+            transition={{
+              duration: 3.5,
+              ease: "linear",
+              repeat: Infinity,
+              repeatDelay: 1.5
+            }}
+            style={{
+              background: 'linear-gradient(110deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.25) 45%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.25) 55%, rgba(255,255,255,0) 70%)'
+            }}
+          />
+        </div>
         
         {/* Subtle noise/texture overlay for realism (gradient side only) */}
         <div 
