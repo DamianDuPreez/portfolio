@@ -5,11 +5,10 @@ import { ArrowRight, ArrowLeft, X, ExternalLink } from 'lucide-react';
 const initialProjects = [
   {
     id: 1,
-    title: 'Client Dashboard',
+    title: 'E-Commerce Platform',
     category: 'Web App',
     image: 'https://images.unsplash.com/photo-1661956602116-aa6865609028?auto=format&fit=crop&q=80&w=800&h=600',
-    description: 'A full-stack e-commerce solution with Stripe integration and dynamic 3D product previews. This application handles everything from inventory management to secure payment processing.',
-    link: 'https://codesolve-dashboard-showcase.web.app'
+    description: 'A full-stack e-commerce solution with Stripe integration and dynamic 3D product previews. This application handles everything from inventory management to secure payment processing.'
   },
   {
     id: 2,
@@ -27,10 +26,11 @@ const initialProjects = [
   },
   {
     id: 4,
-    title: 'Health Tracking App',
+    title: 'CodeSolve-Dashboard-Showcase',
     category: 'Mobile App',
     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800&h=600',
-    description: 'A comprehensive health and fitness tracker with real-time biometric synchronization. Includes custom workout plans and nutritional logging.'
+    description: 'A comprehensive health and fitness tracker with real-time biometric synchronization. Includes custom workout plans and nutritional logging.',
+    link: 'https://codesolve-dashboard-showcase.web.app'
   },
   {
     id: 5,
@@ -89,7 +89,11 @@ const ProjectGallery: React.FC = () => {
 
   const handleCardClick = (project: typeof initialProjects[0], visualIndex: number) => {
     if (visualIndex === 0) {
-      setSelectedProject(project);
+      if (project.link) {
+        window.open(project.link, '_blank');
+      } else {
+        setSelectedProject(project);
+      }
     } else {
       setDirection(1);
       setAbsoluteIndex(prev => prev + visualIndex);
@@ -150,10 +154,10 @@ const ProjectGallery: React.FC = () => {
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-[28px] md:text-[32px] leading-tight font-medium text-slate-900 dark:text-white tracking-tight">
-              What’s happening
+              Projects
             </h2>
             <p className="text-[20px] md:text-[22px] text-slate-500 dark:text-slate-400 tracking-tight">
-              See the latest from Stripe.
+              An overview of custom SaaS platforms, technical design integrations, and scalable client cloud ecosystems built for production.
             </p>
           </motion.div>
           
