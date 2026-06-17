@@ -1,7 +1,9 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 
 const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "" }) => {
+  const { palette } = useTheme();
   const ref = useRef<HTMLDivElement>(null);
 
   // Mouse position values
@@ -9,13 +11,13 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
   const y = useMotionValue(0);
 
   // Smooth out the movement with springs
-  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
-  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
+  const mouseXSpring = useSpring(x, { stiffness: 60, damping: 25, mass: 1 });
+  const mouseYSpring = useSpring(y, { stiffness: 60, damping: 25, mass: 1 });
 
   // Map mouse positions to rotation angles
-  // Max rotation angle is 15 degrees
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+  // Max rotation angle is 10 degrees for a smoother, more subtle tilt
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
 
   // Calculate a subtle glare effect that moves with the mouse
   const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ["100%", "0%"]);
@@ -41,7 +43,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
 
   return (
     <div 
-      className={`relative flex items-center justify-center w-full h-full perspective-[1000px] overflow-visible bg-slate-900 ${className}`}
+      className={`relative flex items-center justify-center w-full h-full perspective-[1000px] overflow-visible ${palette.isDark ? 'bg-slate-900' : 'bg-slate-100'} ${className} transition-colors duration-[1500ms]`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
@@ -52,10 +54,10 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
           rotateY,
           transformStyle: "preserve-3d"
         }}
-        className="relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default transition-shadow hover:shadow-[0_20px_50px_rgba(236,72,153,0.3)]"
+        className={`relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default transition-shadow hover:shadow-[0_20px_50px_rgba(236,72,153,0.3)]`}
       >
-        {/* Background vivid gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-500 via-purple-600 to-orange-500 z-0 opacity-90" />
+        {/* Background vivid gradient based on theme */}
+        <div className={`absolute inset-0 z-0 opacity-90 transition-colors duration-[1500ms] ${palette.isDark ? 'bg-gradient-to-br from-indigo-800 via-purple-900 to-slate-900' : 'bg-gradient-to-br from-rose-200 via-fuchsia-300 to-indigo-300'}`} />
         
         {/* Subtle noise/texture overlay for realism */}
         <div 
