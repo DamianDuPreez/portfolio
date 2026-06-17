@@ -26,10 +26,10 @@ const initialProjects = [
   },
   {
     id: 4,
-    title: 'CodeSolve-Dashboard-Showcase',
-    category: 'Mobile App',
+    title: 'CodeSolve Dashboard Showcase',
+    category: 'Web App',
     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800&h=600',
-    description: 'A comprehensive health and fitness tracker with real-time biometric synchronization. Includes custom workout plans and nutritional logging.',
+    description: 'A high-end client analytics and management infrastructure platform featuring reactive data visualizations, real-time performance tracking, and dynamic security access protocols. Built to demonstrate state management optimization and seamless backend data synchronization.',
     link: 'https://codesolve-dashboard-showcase.web.app'
   },
   {
@@ -89,11 +89,7 @@ const ProjectGallery: React.FC = () => {
 
   const handleCardClick = (project: typeof initialProjects[0], visualIndex: number) => {
     if (visualIndex === 0) {
-      if (project.link) {
-        window.open(project.link, '_blank');
-      } else {
-        setSelectedProject(project);
-      }
+      setSelectedProject(project);
     } else {
       setDirection(1);
       setAbsoluteIndex(prev => prev + visualIndex);
