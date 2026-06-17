@@ -17,16 +17,26 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
     const render = () => {
       time += 0.015; // Fluid speed
 
-      // Generate mathematical sine wave paths for true fluid liquid effect
+      // Layered Sine FBM (Fractal Brownian Motion) matching the PerlinFlowField
+      const fbm = (y: number, time: number) => {
+        let total = 0;
+        let amplitude = 1.0;
+        let frequency = 1.0;
+        for (let i = 0; i < 3; i++) {
+          total += Math.sin(y * frequency + time) * Math.cos(y * frequency - time * 0.5) * amplitude;
+          amplitude *= 0.5;
+          frequency *= 2.0;
+        }
+        return total;
+      };
+
       const getWavePath = (baseX: number, freq: number, amp: number, phase: number) => {
-        let path = `M 400 0 L ${baseX + Math.sin(phase) * amp} 0`;
-        // Tighter step resolution (5px) for perfect curves
+        let path = `M 400 0 L ${baseX + fbm(0, phase) * amp} 0`;
         for (let y = 5; y <= 250; y += 5) {
-          // Compound sine waves for organic, non-repeating water ripple behavior
-          const x = baseX + Math.sin(y * freq + phase) * amp + Math.cos(y * freq * 0.6 + phase * 1.3) * (amp * 0.4);
+          const x = baseX + fbm(y * freq, phase) * amp;
           path += ` L ${x} ${y}`;
         }
-        path += ` L 400 250 Z`; // Fill everything to the right side
+        path += ` L 400 250 Z`;
         return path;
       };
 
