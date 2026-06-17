@@ -103,7 +103,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
 
         {/* Bottom Section: VISA Logo */}
         <div className="relative z-20 flex justify-end items-end w-full mb-2 pr-4 pb-2">
-          <img src="/visa-logo.png" alt="Visa Logo" className="h-4 w-auto object-contain opacity-95" />
+          <img src="/visa-logo.svg?v=1" alt="Visa Logo" className="h-4 w-auto object-contain opacity-95" />
         </div>
 
       </motion.div>
