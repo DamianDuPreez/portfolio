@@ -84,27 +84,14 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         {/* Top Section: Chip & Contactless */}
         <div className="relative z-20 flex justify-between items-center mt-4">
           <div className="flex items-center gap-4">
-            {/* Inline SVG Contactless Wave Symbol (Left of Chip, facing chip) */}
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-white/90"
-            >
-              <path d="M5.5 15.5C4 13.5 4 10.5 5.5 8.5" />
-              <path d="M8.5 18.5C6 15 6 9 8.5 5.5" />
-              <path d="M11.5 21.5C8 16.5 8 7.5 11.5 2.5" />
-              <path d="M14.5 18.5C17 15 17 9 14.5 5.5" />
+            {/* Inline SVG Contactless Wave Symbol */}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-6 w-6 text-white/80 opacity-90 ml-2">
+              <path d="M5 8.5c.83 1.17.83 2.83 0 4M8 6c1.66 2.17 1.66 5.83 0 8M11 3.5c2.5 3.17 2.5 8.83 0 12" />
             </svg>
 
             {/* Realistic Detailed Metallic EMV Chip (Silver) */}
-            <div className="w-12 h-10 sm:w-14 sm:h-[42px] rounded-md bg-gradient-to-br from-slate-300 via-slate-100 to-slate-400 p-[1px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),inset_0_-1px_1px_rgba(0,0,0,0.2),0_1px_2px_rgba(0,0,0,0.3)] relative overflow-hidden opacity-95">
-               <div className="w-full h-full rounded-[5px] overflow-hidden grid grid-cols-3 grid-rows-4 gap-[1px] bg-slate-500/30">
+            <div className="w-12 h-10 sm:w-14 sm:h-[42px] rounded-[6px] bg-gradient-to-br from-[#d4d4d8] via-[#f4f4f5] to-[#a1a1aa] p-[1px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),inset_0_-1px_1px_rgba(0,0,0,0.2),0_1px_2px_rgba(0,0,0,0.3)] relative overflow-hidden opacity-95">
+               <div className="w-full h-full rounded-[5px] overflow-hidden grid grid-cols-3 grid-rows-4 gap-[1px] bg-slate-500/20">
                  {/* Top row */}
                  <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-r border-b border-black/10"></div>
                  <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-b border-black/10 flex items-center justify-center"><div className="w-4 h-[1px] bg-slate-400/50 rounded-full"></div></div>
@@ -128,11 +115,9 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
 
         {/* Bottom Section: VISA Logo */}
         <div className="relative z-20 flex justify-end items-end w-full mb-2">
-          <img 
-            src="/images/visa_logo.svg" 
-            alt="Visa Logo" 
-            className="w-[70px] drop-shadow-md opacity-90 object-contain"
-          />
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-10 w-auto opacity-95 drop-shadow-md">
+            <path d="M19.38 31.86h3.4l2.12-13.08h-3.41l-2.11 13.08zM34.72 19.06c-.66-.26-1.71-.54-3.01-.54-3.32 0-5.65 1.77-5.67 4.3-.02 1.87 1.67 2.91 2.95 3.53 1.31.64 1.75 1.05 1.75 1.62 0 .87-1.05 1.27-2.02 1.27-1.36 0-2.09-.21-3.2-.72l-.44-.21-.47 2.91c.78.36 2.23.67 3.73.68 3.53 0 5.82-1.74 5.85-4.44.03-1.48-.88-2.6-2.82-3.53-1.17-.59-1.89-.99-1.89-1.6 0-.54.59-1.12 1.89-1.12 1.06-.02 1.84.23 2.43.48l.29.13.48-2.88zM43.74 18.78h-2.62c-.81 0-1.42.24-1.77 1.07l-5.02 12.01h3.57l.71-1.96h4.37l.41 1.96H47l-3.26-13.08zm-4.14 8.35l1.83-5.02 1.05 5.02h-2.88zM14.61 18.78L11.23 27.7l-.36-1.81c-.59-2-2.17-4.17-4.04-5.17l2.94 11.14h3.61l5.37-13.08h-4.14z" fill="#FFF"/>
+          </svg>
         </div>
 
       </motion.div>
