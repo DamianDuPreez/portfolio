@@ -64,11 +64,16 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
           style={{ background: `linear-gradient(135deg, ${palette.primary}, ${palette.secondary})` }}
         />
         
-        {/* Subtle noise/texture overlay for realism */}
+        {/* Subtle noise/texture overlay for realism (gradient side only) */}
         <div 
-          className="absolute inset-0 opacity-20 mix-blend-overlay z-0" 
+          className="absolute inset-0 opacity-20 mix-blend-overlay z-0 pointer-events-none" 
           style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}
         />
+
+        {/* Solid White Wave Accenting Section (Right 30%) */}
+        <svg viewBox="0 0 400 250" preserveAspectRatio="none" className="absolute inset-0 z-0 w-full h-full pointer-events-none drop-shadow-2xl">
+          <path d="M 280 0 C 230 80, 320 170, 270 250 L 400 250 L 400 0 Z" fill="#ffffff" />
+        </svg>
 
         {/* Top Section: Chip & Contactless */}
         <div className="relative z-20 flex justify-between items-center mt-6 ml-4">
@@ -97,7 +102,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
 
         {/* Bottom Section: VISA Logo */}
         <div className="relative z-20 flex justify-end items-end w-full mb-2 pr-4 pb-2">
-          <img src="/visa-logo.svg?v=1" alt="Visa Logo" className="h-4 w-auto object-contain opacity-95" />
+          <img src="/visa-logo.svg?v=1" alt="Visa Logo" className="h-5 w-auto object-contain drop-shadow-sm" />
         </div>
 
       </motion.div>
