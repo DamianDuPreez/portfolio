@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { motion } from 'framer-motion';
-import { Mail } from 'lucide-react';
+import { Mail, ArrowRight } from 'lucide-react';
 import PerlinFlowField from '../canvas/PerlinFlowField';
 import { useTheme } from '../context/ThemeContext';
 
@@ -67,7 +67,8 @@ const ContactForm: React.FC = () => {
                 href="http://localhost:3000"
                 className="group inline-flex justify-center items-center px-6 py-2.5 mt-4 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-600 hover:bg-brand-700 transition-colors whitespace-nowrap"
               >
-                Start Project Scoping →
+                Start Project Scoping
+                <ArrowRight className="w-0 opacity-0 -translate-x-2 group-hover:w-4 group-hover:opacity-100 group-hover:translate-x-1 group-hover:ml-2 transition-all duration-300 overflow-hidden" />
               </a>
             </div>
             </motion.div>
