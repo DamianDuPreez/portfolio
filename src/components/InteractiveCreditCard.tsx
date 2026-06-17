@@ -64,22 +64,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
           style={{ background: `linear-gradient(135deg, ${palette.primary}, ${palette.secondary})` }}
         />
 
-        {/* Dynamic Looping Shimmer Layer */}
-        <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
-          <motion.div
-            className="absolute top-0 bottom-0 w-full"
-            animate={{ left: ['-100%', '200%'] }}
-            transition={{
-              duration: 3.5,
-              ease: "linear",
-              repeat: Infinity,
-              repeatDelay: 1.5
-            }}
-            style={{
-              background: 'linear-gradient(110deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.25) 45%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.25) 55%, rgba(255,255,255,0) 70%)'
-            }}
-          />
-        </div>
+
         
         {/* Subtle noise/texture overlay for realism (gradient side only) */}
         <div 
@@ -87,9 +72,24 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
           style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}
         />
 
-        {/* Solid White Wave Accenting Section (Right 30%) */}
+        {/* Organic Liquid Wave Accenting Section (Right 30%) */}
         <svg viewBox="0 0 400 250" preserveAspectRatio="none" className="absolute inset-0 z-0 w-full h-full pointer-events-none drop-shadow-2xl">
-          <path d="M 280 0 C 230 80, 320 170, 270 250 L 400 250 L 400 0 Z" fill="#ffffff" />
+          <motion.path 
+            animate={{
+              d: [
+                "M 280 0 C 230 80, 320 170, 270 250 L 400 250 L 400 0 Z",
+                "M 260 0 C 310 90, 240 160, 290 250 L 400 250 L 400 0 Z",
+                "M 290 0 C 240 100, 330 150, 260 250 L 400 250 L 400 0 Z",
+                "M 280 0 C 230 80, 320 170, 270 250 L 400 250 L 400 0 Z"
+              ]
+            }}
+            transition={{
+              duration: 7,
+              ease: "easeInOut",
+              repeat: Infinity
+            }}
+            fill="#ffffff" 
+          />
         </svg>
 
         {/* Top Section: Chip & Contactless */}
