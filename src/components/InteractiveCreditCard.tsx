@@ -56,8 +56,11 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         }}
         className={`relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default transition-shadow hover:shadow-[0_20px_50px_rgba(236,72,153,0.3)]`}
       >
-        {/* Background vivid gradient based on theme */}
-        <div className={`absolute inset-0 z-0 opacity-90 transition-colors duration-[1500ms] ${palette.isDark ? 'bg-gradient-to-br from-indigo-800 via-purple-900 to-slate-900' : 'bg-gradient-to-br from-rose-200 via-fuchsia-300 to-indigo-300'}`} />
+        {/* Background vivid gradient based on active theme tokens */}
+        <div 
+          className="absolute inset-0 z-0 opacity-90 transition-colors duration-[1500ms]"
+          style={{ background: `linear-gradient(135deg, ${palette.primary}, ${palette.secondary})` }}
+        />
         
         {/* Subtle noise/texture overlay for realism */}
         <div 
