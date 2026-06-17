@@ -5,10 +5,11 @@ import { ArrowRight, ArrowLeft, X, ExternalLink } from 'lucide-react';
 const initialProjects = [
   {
     id: 1,
-    title: 'E-Commerce Platform',
+    title: 'Client Dashboard',
     category: 'Web App',
     image: 'https://images.unsplash.com/photo-1661956602116-aa6865609028?auto=format&fit=crop&q=80&w=800&h=600',
-    description: 'A full-stack e-commerce solution with Stripe integration and dynamic 3D product previews. This application handles everything from inventory management to secure payment processing.'
+    description: 'A full-stack e-commerce solution with Stripe integration and dynamic 3D product previews. This application handles everything from inventory management to secure payment processing.',
+    link: 'https://codesolve-dashboard-showcase.web.app'
   },
   {
     id: 2,
@@ -309,8 +310,12 @@ const ProjectGallery: React.FC = () => {
                 
                 <div className="flex gap-4">
                   <a 
-                    href="#"
-                    onClick={(e) => e.preventDefault()}
+                    href={selectedProject.link || '#'}
+                    onClick={(e) => {
+                      if (!selectedProject.link) e.preventDefault();
+                    }}
+                    target={selectedProject.link ? "_blank" : undefined}
+                    rel={selectedProject.link ? "noopener noreferrer" : undefined}
                     className="inline-flex items-center justify-center px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg transition-colors gap-2 shadow-sm"
                   >
                     Visit Website
