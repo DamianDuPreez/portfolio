@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import PerlinFlowField from '../canvas/PerlinFlowField';
 import { useTheme } from '../context/ThemeContext';
 
@@ -37,7 +37,6 @@ const ContactForm: React.FC = () => {
               I'm here to help bring your ideas to life.
             </p>
 
-            <div className="space-y-6">
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-white dark:bg-gray-900 rounded-md flex items-center justify-center border border-gray-200 dark:border-gray-800 shadow-sm mr-4">
                   <Mail className="w-5 h-5 text-brand-500" />
@@ -47,25 +46,6 @@ const ContactForm: React.FC = () => {
                   <p className="text-gray-900 dark:text-white font-medium">hello@portfolio.com</p>
                 </div>
               </div>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-white dark:bg-gray-900 rounded-md flex items-center justify-center border border-gray-200 dark:border-gray-800 shadow-sm mr-4">
-                  <Phone className="w-5 h-5 text-brand-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Phone</p>
-                  <p className="text-gray-900 dark:text-white font-medium">+1 (555) 123-4567</p>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-white dark:bg-gray-900 rounded-md flex items-center justify-center border border-gray-200 dark:border-gray-800 shadow-sm mr-4">
-                  <MapPin className="w-5 h-5 text-brand-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Location</p>
-                  <p className="text-gray-900 dark:text-white font-medium">San Francisco, CA (Remote)</p>
-                </div>
-              </div>
-            </div>
           </motion.div>
 
           <div className="relative">
@@ -78,14 +58,14 @@ const ContactForm: React.FC = () => {
             >
             <div className="flex flex-col items-center justify-center h-full text-center space-y-6 py-10">
               <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                🚀 Ready to Engineer Your Enterprise Tech Stack?
+                Ready to Engineer Your Enterprise Tech Stack?
               </h3>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
                 Project intake, custom Web SaaS scoping, and cloud consulting infrastructure management are handled exclusively through our corporate storefront.
               </p>
               <a
                 href="http://localhost:3000"
-                className="inline-flex items-center px-8 py-4 mt-4 bg-brand-600 hover:bg-brand-500 text-white font-medium rounded-lg shadow-lg hover:shadow-brand-500/25 transition-all duration-300 transform hover:-translate-y-1"
+                className="group inline-flex justify-center items-center px-6 py-2.5 mt-4 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-600 hover:bg-brand-700 transition-colors whitespace-nowrap"
               >
                 Start Project Scoping →
               </a>
