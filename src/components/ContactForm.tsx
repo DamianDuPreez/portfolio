@@ -1,40 +1,12 @@
-import React, { useState, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { motion } from 'framer-motion';
-import { Send, Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
 import PerlinFlowField from '../canvas/PerlinFlowField';
 import { useTheme } from '../context/ThemeContext';
 
 const ContactForm: React.FC = () => {
   const { palette } = useTheme();
-  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setFormStatus('submitting');
-
-    const form = e.currentTarget;
-    const data = new FormData(form);
-
-    try {
-      const response = await fetch('https://formspree.io/f/xyyqpeok', { // Replace with actual formspree endpoint if provided
-        method: 'POST',
-        body: data,
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        setFormStatus('success');
-        form.reset();
-      } else {
-        setFormStatus('error');
-      }
-    } catch (error) {
-      setFormStatus('error');
-    }
-  };
 
   return (
     <section id="contact" className="relative py-24 bg-slate-50 dark:bg-gray-900 overflow-hidden transition-colors duration-300">
@@ -104,71 +76,20 @@ const ContactForm: React.FC = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="relative z-10 bg-white/60 dark:bg-gray-950/60 backdrop-blur-2xl rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.05)] dark:shadow-none border border-white/50 dark:border-gray-800/50 p-8"
             >
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  required
-                  className="w-full px-4 py-3 rounded-md border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-shadow"
-                  placeholder="John Doe"
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  required
-                  className="w-full px-4 py-3 rounded-md border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-shadow"
-                  placeholder="john@example.com"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Message
-                </label>
-                <textarea
-                  name="message"
-                  id="message"
-                  required
-                  rows={4}
-                  className="w-full px-4 py-3 rounded-md border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-shadow resize-none"
-                  placeholder="Tell me about your project..."
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={formStatus === 'submitting'}
-                className="w-full inline-flex justify-center items-center px-8 py-4 border border-transparent text-base font-medium rounded-md text-white bg-brand-600 hover:bg-brand-700 disabled:opacity-70 transition-colors"
+            <div className="flex flex-col items-center justify-center h-full text-center space-y-6 py-10">
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                🚀 Ready to Engineer Your Enterprise Tech Stack?
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
+                Project intake, custom Web SaaS scoping, and cloud consulting infrastructure management are handled exclusively through our corporate storefront.
+              </p>
+              <a
+                href="http://localhost:3000"
+                className="inline-flex items-center px-8 py-4 mt-4 bg-brand-600 hover:bg-brand-500 text-white font-medium rounded-lg shadow-lg hover:shadow-brand-500/25 transition-all duration-300 transform hover:-translate-y-1"
               >
-                {formStatus === 'submitting' ? (
-                  'Sending...'
-                ) : (
-                  <>
-                    Send Message
-                    <Send className="ml-2 w-5 h-5" />
-                  </>
-                )}
-              </button>
-
-              {formStatus === 'success' && (
-                <p className="text-green-500 text-center font-medium">Message sent successfully!</p>
-              )}
-              {formStatus === 'error' && (
-                <p className="text-red-500 text-center font-medium">Oops! There was a problem sending your message.</p>
-              )}
-            </form>
+                Start Project Scoping →
+              </a>
+            </div>
             </motion.div>
           </div>
         </div>
