@@ -178,7 +178,10 @@ const ProjectGallery: React.FC = () => {
                 >
                   
                   {/* Image Mask */}
-                  <div className="absolute inset-0 w-full h-full overflow-hidden bg-slate-900 flex items-center justify-center">
+                  <div 
+                    className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center"
+                    style={{ background: 'linear-gradient(135deg, #020617 0%, #1e1b4b 50%, #042f2e 100%)' }}
+                  >
                     {project.title === 'CodeSolve Dashboard Showcase' ? (
                       <div className="w-full h-full flex items-center justify-center pointer-events-auto">
                         <InteractiveCreditCard className="scale-75 md:scale-100" />
@@ -193,8 +196,8 @@ const ProjectGallery: React.FC = () => {
                           />
                         )}
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-                           {visualIndex === 1 && (
-                             <span className="text-white/90 font-medium tracking-[0.2em] uppercase text-xs sm:text-sm bg-black/60 px-5 py-2.5 rounded-full backdrop-blur-md border border-white/10 shadow-xl">Coming Soon</span>
+                           {visualIndex <= 1 && (
+                             <span className="text-white/90 font-medium tracking-widest uppercase text-[10px] whitespace-nowrap bg-black/60 px-4 py-2 rounded-full backdrop-blur-md border border-white/10 shadow-xl">Coming Soon</span>
                            )}
                         </div>
                       </>
