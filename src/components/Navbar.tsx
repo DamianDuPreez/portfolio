@@ -120,7 +120,7 @@ const Navbar: React.FC = () => {
             <ThemeDropdown />
 
             <a href="#contact" className="px-5 py-2 rounded-md bg-slate-900 text-white dark:bg-white dark:text-gray-900 font-medium text-sm hover:opacity-90 border border-transparent hover:border-brand-500 dark:hover:border-brand-500 transition-all duration-[1500ms]">
-              Contact
+              Work With Me
             </a>
           </div>
 
@@ -156,7 +156,7 @@ const Navbar: React.FC = () => {
               className="block mt-4 text-center px-5 py-3 rounded-md bg-slate-900 text-white dark:bg-white dark:text-gray-900 font-medium border border-transparent hover:border-brand-500 transition-all duration-300"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Let's Talk
+              Work With Me
             </a>
           </div>
         </div>
