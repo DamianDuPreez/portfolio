@@ -102,15 +102,25 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
               <path d="M14.5 18.5C17 15 17 9 14.5 5.5" />
             </svg>
 
-            {/* Metallic EMV Chip (Silver) */}
-            <div className="w-12 h-10 rounded-md overflow-hidden bg-gradient-to-br from-slate-300 via-slate-100 to-slate-400 shadow-inner flex flex-col justify-evenly p-[1px] opacity-95 relative">
-               <div className="absolute inset-0 border border-black/10 rounded-md"></div>
-               {/* Chip lines */}
-               <div className="w-full h-[1px] bg-black/10"></div>
-               <div className="w-full h-[1px] bg-black/10"></div>
-               <div className="w-full flex justify-between h-[1px]">
-                 <div className="w-1/3 h-full bg-black/10"></div>
-                 <div className="w-1/3 h-full bg-black/10"></div>
+            {/* Realistic Detailed Metallic EMV Chip (Silver) */}
+            <div className="w-12 h-10 sm:w-14 sm:h-[42px] rounded-md bg-gradient-to-br from-slate-300 via-slate-100 to-slate-400 p-[1px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),inset_0_-1px_1px_rgba(0,0,0,0.2),0_1px_2px_rgba(0,0,0,0.3)] relative overflow-hidden opacity-95">
+               <div className="w-full h-full rounded-[5px] overflow-hidden grid grid-cols-3 grid-rows-4 gap-[1px] bg-slate-500/30">
+                 {/* Top row */}
+                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-r border-b border-black/10"></div>
+                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-b border-black/10 flex items-center justify-center"><div className="w-4 h-[1px] bg-slate-400/50 rounded-full"></div></div>
+                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-l border-b border-black/10"></div>
+
+                 {/* Middle rows (Center simulation) */}
+                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 row-span-2 border-r border-black/10"></div>
+                 <div className="bg-gradient-to-br from-slate-100 to-slate-300 shadow-inner col-span-1 row-span-2 border border-black/20 rounded-full mx-[2px] my-[1px] flex items-center justify-center">
+                    <div className="w-2 h-2 rounded-full border border-black/10"></div>
+                 </div>
+                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 row-span-2 border-l border-black/10"></div>
+
+                 {/* Bottom row */}
+                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-r border-t border-black/10"></div>
+                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-t border-black/10 flex items-center justify-center"><div className="w-4 h-[1px] bg-slate-400/50 rounded-full"></div></div>
+                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-l border-t border-black/10"></div>
                </div>
             </div>
           </div>
@@ -118,9 +128,11 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
 
         {/* Bottom Section: VISA Logo */}
         <div className="relative z-20 flex justify-end items-end w-full mb-2">
-          <svg viewBox="0 0 320 104" width="70" className="fill-white drop-shadow-md opacity-90">
-            <path d="M125.79 0l-19.16 99.88h30.63L156.4 0h-30.61zm83.35 0c-6.84 0-17.7 1.83-26.68 6.44l-4.75 22.84c8.47-3.95 19.17-6.03 29.56-6.03 10.23 0 13.55 3.1 13.55 8.1 0 11.23-41.97 9.87-41.97 34.52 0 12.3 10.5 21.05 31.7 21.05 10.2 0 19.34-2.14 26.64-5.6l4.98-23.77c-6.28 2.87-16.14 5.3-25.7 5.3-9.52 0-14.44-2.78-14.44-7.8 0-10.87 41.96-10.4 41.96-34.8C244 5.8 230.14 0 209.14 0zM302.58 0h-24.1c-5.8 0-10.3 2.76-12.82 8.08l-36.27 83.5 32.14-8.3 5.4-15.35h39.3l3.77 18.06h29.5L302.58 0zm-18.78 43.14l9.46-25.96 5.44 26.68-14.9-.72zM94.66 0L67.14 68.3 64 53.64C61.4 43.9 52 35.8 38 31.05L65.4 99.88h32.1l48.24-99.88H114.2l-19.54 0zM0 0v16.12c14.28 0 24 3.96 31 10.2l15.54 73.56H78.1L62 0H0z" />
-          </svg>
+          <img 
+            src="/images/visa_logo.svg" 
+            alt="Visa Logo" 
+            className="w-[70px] drop-shadow-md opacity-90 object-contain"
+          />
         </div>
 
       </motion.div>
