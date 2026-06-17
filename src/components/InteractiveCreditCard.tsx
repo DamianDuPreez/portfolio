@@ -72,8 +72,38 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
           style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}
         />
 
-        {/* Organic Liquid Wave Accenting Section (Right 30%) */}
+        {/* Organic Liquid Wave Accenting Section (Right 30% with Parallax Depth) */}
         <svg viewBox="0 0 400 250" preserveAspectRatio="none" className="absolute inset-0 z-0 w-full h-full pointer-events-none drop-shadow-2xl">
+          {/* Layer 3: Back-most translucent wave (Theme Tinted) */}
+          <motion.path 
+            animate={{
+              d: [
+                "M 230 0 C 180 80, 270 170, 220 250 L 400 250 L 400 0 Z",
+                "M 250 0 C 290 90, 200 160, 260 250 L 400 250 L 400 0 Z",
+                "M 220 0 C 260 100, 290 150, 230 250 L 400 250 L 400 0 Z",
+                "M 230 0 C 180 80, 270 170, 220 250 L 400 250 L 400 0 Z"
+              ]
+            }}
+            transition={{ duration: 7, ease: "easeInOut", repeat: Infinity }}
+            fill={palette.primary}
+            opacity={0.4}
+          />
+          
+          {/* Layer 2: Mid wave (Semi-transparent white) */}
+          <motion.path 
+            animate={{
+              d: [
+                "M 250 0 C 200 90, 290 160, 240 250 L 400 250 L 400 0 Z",
+                "M 270 0 C 310 100, 230 180, 280 250 L 400 250 L 400 0 Z",
+                "M 240 0 C 250 80, 320 170, 250 250 L 400 250 L 400 0 Z",
+                "M 250 0 C 200 90, 290 160, 240 250 L 400 250 L 400 0 Z"
+              ]
+            }}
+            transition={{ duration: 6, ease: "easeInOut", repeat: Infinity }}
+            fill="rgba(255,255,255,0.4)"
+          />
+
+          {/* Layer 1: Front-most Base Wave (Solid White, crisp edge) */}
           <motion.path 
             animate={{
               d: [
@@ -83,11 +113,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
                 "M 280 0 C 230 80, 320 170, 270 250 L 400 250 L 400 0 Z"
               ]
             }}
-            transition={{
-              duration: 7,
-              ease: "easeInOut",
-              repeat: Infinity
-            }}
+            transition={{ duration: 8, ease: "easeInOut", repeat: Infinity }}
             fill="#ffffff" 
           />
         </svg>
