@@ -84,26 +84,14 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         {/* Top Section: Chip & Contactless */}
         <div className="relative z-20 flex justify-between items-center mt-6 ml-4">
           <div className="flex items-center gap-3">
-            {/* Realistic Detailed Metallic EMV Chip (Silver) */}
-            <div className="w-9 h-7 rounded-[4px] bg-gradient-to-br from-[#d4d4d8] via-[#f4f4f5] to-[#a1a1aa] p-[1px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),inset_0_-1px_1px_rgba(0,0,0,0.2),0_1px_2px_rgba(0,0,0,0.3)] relative overflow-hidden opacity-95">
-               <div className="w-full h-full rounded-[3px] overflow-hidden grid grid-cols-3 grid-rows-4 gap-[1px] bg-slate-500/20">
-                 {/* Top row */}
-                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-r border-b border-black/10"></div>
-                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-b border-black/10 flex items-center justify-center"><div className="w-2 h-[1px] bg-slate-400/50 rounded-full"></div></div>
-                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-l border-b border-black/10"></div>
-
-                 {/* Middle rows (Center simulation) */}
-                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 row-span-2 border-r border-black/10"></div>
-                 <div className="bg-gradient-to-br from-slate-100 to-slate-300 shadow-inner col-span-1 row-span-2 border border-black/20 rounded-full mx-[1px] my-[1px] flex items-center justify-center">
-                    <div className="w-1 h-1 rounded-full border border-black/10"></div>
-                 </div>
-                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 row-span-2 border-l border-black/10"></div>
-
-                 {/* Bottom row */}
-                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-r border-t border-black/10"></div>
-                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-t border-black/10 flex items-center justify-center"><div className="w-2 h-[1px] bg-slate-400/50 rounded-full"></div></div>
-                 <div className="bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner col-span-1 border-l border-t border-black/10"></div>
+            {/* Flat Minimalist EMV Chip (2D Silver) */}
+            <div className="w-8 h-6 rounded-md bg-[#cbd5e1] border border-white/20 flex flex-col justify-evenly p-[2px] opacity-90 relative">
+               <div className="w-full h-[1px] bg-black/10 rounded-full"></div>
+               <div className="w-full flex justify-between h-[1px]">
+                 <div className="w-1/3 h-full bg-black/10 rounded-full"></div>
+                 <div className="w-1/3 h-full bg-black/10 rounded-full"></div>
                </div>
+               <div className="w-full h-[1px] bg-black/10 rounded-full"></div>
             </div>
 
             {/* Inline SVG Contactless Wave Symbol */}
@@ -114,8 +102,8 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         </div>
 
         {/* Bottom Section: VISA Logo */}
-        <div className="relative z-20 flex justify-end items-end w-full mb-2 pr-2 pb-2">
-          <svg viewBox="0 0 60 20" fill="currentColor" className="h-5 w-auto text-white opacity-95 selection:bg-transparent drop-shadow-sm">
+        <div className="relative z-20 flex justify-end items-end w-full mb-2 pr-4 pb-2">
+          <svg viewBox="0 0 60 20" fill="#FFFFFF" className="h-4 w-auto opacity-95 selection:bg-transparent">
             <path d="M25.2 1.2L22.9 15.6h-3.4l2.3-14.4h3.4zm10.7 0l-2.6 10.3-.3-1.4c-.5-1.8-2-3.8-3.8-4.7l2.5 10.2h3.6l5.3-14.4H35.9zm13 0h-2.8c-.8 0-1.5.5-1.8 1.2l-5.1 13.2h3.7l.7-2.1h4.5l.4 2.1h3.2L52 1.2c-.1 0-.1 0 0 0zm-3.6 9.4l1.9-5.3 1.1 5.3h-3zm-32.5-9.4l-3.3 8.7-.4-1.9c-.6-2.1-2.2-4.3-4.3-5.4L8 15.6h3.7l5.5-14.4H13.6z" />
           </svg>
         </div>
