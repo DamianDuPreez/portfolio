@@ -74,7 +74,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         <div className="relative z-20 flex justify-between items-center mt-6 ml-4">
           <div className="flex items-center gap-3">
             {/* Inline SVG Contactless Wave Symbol */}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-5 w-5 text-white/80 opacity-90">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-6 w-6 text-white/80 opacity-90 shrink-0">
               <path d="M5 8.5c.83 1.17.83 2.83 0 4M8 6c1.66 2.17 1.66 5.83 0 8M11 3.5c2.5 3.17 2.5 8.83 0 12" />
             </svg>
 

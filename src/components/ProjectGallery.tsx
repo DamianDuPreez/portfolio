@@ -4,70 +4,22 @@ import { ArrowRight, ArrowLeft, X, ExternalLink } from 'lucide-react';
 import InteractiveCreditCard from './InteractiveCreditCard';
 
 const initialProjects = [
-  {
-    id: 1,
-    title: 'E-Commerce Platform',
-    category: 'Web App',
-    image: 'https://images.unsplash.com/photo-1661956602116-aa6865609028?auto=format&fit=crop&q=80&w=800&h=600',
-    description: 'A full-stack e-commerce solution with Stripe integration and dynamic 3D product previews. This application handles everything from inventory management to secure payment processing.'
-  },
-  {
-    id: 2,
-    title: 'Finance Dashboard',
-    category: 'UI/UX Design',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800&h=600',
-    description: 'A modern, dark-themed analytics dashboard designed for high-frequency traders. Features real-time charting, portfolio tracking, and AI-driven market insights.'
-  },
-  {
-    id: 3,
-    title: 'AI Content Generator',
-    category: 'SaaS',
-    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800&h=600',
-    description: 'An AI-powered application that generates marketing copy, featuring a sleek, minimal interface. Built with React and integrated with large language models.'
-  },
+  { id: 1, title: '', category: '', image: '', description: '' },
+  { id: 2, title: '', category: '', image: '', description: '' },
+  { id: 3, title: '', category: '', image: '', description: '' },
   {
     id: 4,
     title: 'CodeSolve Dashboard Showcase',
     category: 'Web App',
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800&h=600',
+    image: '',
     description: 'A high-end client analytics and management infrastructure platform featuring reactive data visualizations, real-time performance tracking, and dynamic security access protocols. Built to demonstrate state management optimization and seamless backend data synchronization.',
     link: 'https://codesolve-dashboard-showcase.web.app'
   },
-  {
-    id: 5,
-    title: 'Real Estate Platform',
-    category: 'Web App',
-    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=800&h=600',
-    description: 'A high-end property listing platform with virtual tours, interactive maps, and automated viewing scheduling systems.'
-  },
-  {
-    id: 6,
-    title: 'Social Media Manager',
-    category: 'SaaS',
-    image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800&h=600',
-    description: 'A unified social media management tool with AI-driven analytics, bulk scheduling, and engagement tracking across platforms.'
-  },
-  {
-    id: 7,
-    title: 'Cloud Storage Service',
-    category: 'SaaS',
-    image: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&q=80&w=800&h=600',
-    description: 'A secure, decentralized cloud storage service featuring end-to-end encryption, automated backups, and collaborative file sharing.'
-  },
-  {
-    id: 8,
-    title: 'Fitness Companion',
-    category: 'Mobile App',
-    image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&q=80&w=800&h=600',
-    description: 'A mobile application for custom workouts, tracking calorie intake, and synchronizing with smart wearables to monitor progress.'
-  },
-  {
-    id: 9,
-    title: 'Developer Portfolio',
-    category: 'Web App',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800&h=600',
-    description: 'An interactive, high-performance portfolio website built with React, Three.js, and Tailwind CSS to showcase professional developer projects.'
-  }
+  { id: 5, title: '', category: '', image: '', description: '' },
+  { id: 6, title: '', category: '', image: '', description: '' },
+  { id: 7, title: '', category: '', image: '', description: '' },
+  { id: 8, title: '', category: '', image: '', description: '' },
+  { id: 9, title: '', category: '', image: '', description: '' }
 ];
 
 const ProjectGallery: React.FC = () => {
@@ -233,13 +185,17 @@ const ProjectGallery: React.FC = () => {
                       </div>
                     ) : (
                       <>
-                        <img 
-                          src={project.image} 
-                          alt={project.title}
-                          className="absolute left-0 top-0 min-w-[1200px] h-full object-cover object-left max-w-none pointer-events-none select-none opacity-30 grayscale mix-blend-luminosity"
-                        />
+                        {project.image && (
+                          <img 
+                            src={project.image} 
+                            alt={project.title}
+                            className="absolute left-0 top-0 min-w-[1200px] h-full object-cover object-left max-w-none pointer-events-none select-none opacity-30 grayscale mix-blend-luminosity"
+                          />
+                        )}
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-                           <span className="text-white/90 font-medium tracking-[0.2em] uppercase text-xs sm:text-sm bg-black/60 px-5 py-2.5 rounded-full backdrop-blur-md border border-white/10 shadow-xl">Coming Soon</span>
+                           {visualIndex === 1 && (
+                             <span className="text-white/90 font-medium tracking-[0.2em] uppercase text-xs sm:text-sm bg-black/60 px-5 py-2.5 rounded-full backdrop-blur-md border border-white/10 shadow-xl">Coming Soon</span>
+                           )}
                         </div>
                       </>
                     )}
