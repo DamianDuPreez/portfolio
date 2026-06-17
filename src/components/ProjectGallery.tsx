@@ -90,7 +90,9 @@ const ProjectGallery: React.FC = () => {
 
   const handleCardClick = (project: typeof initialProjects[0], visualIndex: number) => {
     if (visualIndex === 0) {
-      setSelectedProject(project);
+      if (project.title === 'CodeSolve Dashboard Showcase') {
+        setSelectedProject(project);
+      }
     } else {
       setDirection(1);
       setAbsoluteIndex(prev => prev + visualIndex);
@@ -224,17 +226,22 @@ const ProjectGallery: React.FC = () => {
                 >
                   
                   {/* Image Mask */}
-                  <div className="absolute inset-0 w-full h-full overflow-hidden">
+                  <div className="absolute inset-0 w-full h-full overflow-hidden bg-slate-900 flex items-center justify-center">
                     {project.title === 'CodeSolve Dashboard Showcase' ? (
-                      <div className="w-full h-full flex items-center justify-center bg-slate-900 pointer-events-auto">
+                      <div className="w-full h-full flex items-center justify-center pointer-events-auto">
                         <InteractiveCreditCard className="scale-75 md:scale-100" />
                       </div>
                     ) : (
-                      <img 
-                        src={project.image} 
-                        alt={project.title}
-                        className="absolute left-0 top-0 min-w-[1200px] h-full object-cover object-left max-w-none pointer-events-none select-none"
-                      />
+                      <>
+                        <img 
+                          src={project.image} 
+                          alt={project.title}
+                          className="absolute left-0 top-0 min-w-[1200px] h-full object-cover object-left max-w-none pointer-events-none select-none opacity-30 grayscale mix-blend-luminosity"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                           <span className="text-white/90 font-medium tracking-[0.2em] uppercase text-xs sm:text-sm bg-black/60 px-5 py-2.5 rounded-full backdrop-blur-md border border-white/10 shadow-xl">Coming Soon</span>
+                        </div>
+                      </>
                     )}
                   </div>
                   

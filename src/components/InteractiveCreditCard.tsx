@@ -78,14 +78,19 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
               <path d="M5 8.5c.83 1.17.83 2.83 0 4M8 6c1.66 2.17 1.66 5.83 0 8M11 3.5c2.5 3.17 2.5 8.83 0 12" />
             </svg>
 
-            {/* Flat Minimalist EMV Chip (2D Silver) */}
-            <div className="w-8 h-6 rounded-md bg-[#cbd5e1] border border-white/20 flex flex-col justify-evenly p-[2px] opacity-90 relative">
-               <div className="w-full h-[1px] bg-black/10 rounded-full"></div>
-               <div className="w-full flex justify-between h-[1px]">
-                 <div className="w-1/3 h-full bg-black/10 rounded-full"></div>
-                 <div className="w-1/3 h-full bg-black/10 rounded-full"></div>
+            {/* High-Fidelity Geometric EMV Chip */}
+            <div className="w-[36px] h-[26px] rounded-[4px] bg-[#cbd5e1] border-[0.5px] border-white/20 relative overflow-hidden flex items-center justify-center opacity-95">
+               {/* Divider Grid */}
+               <div className="absolute inset-0 w-full h-full pointer-events-none">
+                  <div className="absolute top-[25%] w-full h-[0.5px] bg-black/10" />
+                  <div className="absolute bottom-[25%] w-full h-[0.5px] bg-black/10" />
+                  <div className="absolute left-[30%] w-[0.5px] h-full bg-black/10" />
+                  <div className="absolute right-[30%] w-[0.5px] h-full bg-black/10" />
                </div>
-               <div className="w-full h-[1px] bg-black/10 rounded-full"></div>
+               {/* Centered Microcontroller Block */}
+               <div className="relative z-10 w-[14px] h-[16px] border-[0.5px] border-black/15 rounded-[2px] flex items-center justify-center bg-[#cbd5e1]">
+                  <div className="w-1 h-1 border-[0.5px] border-black/15 rounded-full" />
+               </div>
             </div>
           </div>
         </div>
