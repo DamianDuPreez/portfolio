@@ -1,62 +1,37 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
+
+// Layered Sine FBM (Fractal Brownian Motion) matching the PerlinFlowField
+const fbm = (y: number, time: number) => {
+  let total = 0;
+  let amplitude = 1.0;
+  let frequency = 1.0;
+  for (let i = 0; i < 3; i++) {
+    total += Math.sin(y * frequency + time) * Math.cos(y * frequency - time * 0.5) * amplitude;
+    amplitude *= 0.5;
+    frequency *= 2.0;
+  }
+  return total;
+};
+
+const getStaticWavePath = (baseX: number, freq: number, amp: number, phase: number) => {
+  let path = `M 400 0 L ${baseX + fbm(0, phase) * amp} 0`;
+  for (let y = 5; y <= 250; y += 5) {
+    const x = baseX + fbm(y * freq, phase) * amp;
+    path += ` L ${x} ${y}`;
+  }
+  path += ` L 400 250 Z`;
+  return path;
+};
 
 const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "" }) => {
   const { palette } = useTheme();
   const ref = useRef<HTMLDivElement>(null);
 
-  const path1Ref = useRef<SVGPathElement>(null);
-  const path2Ref = useRef<SVGPathElement>(null);
-  const path3Ref = useRef<SVGPathElement>(null);
-
-  useEffect(() => {
-    let animationFrameId: number;
-    let time = 0;
-
-    const render = () => {
-      time += 0.015; // Fluid speed
-
-      // Layered Sine FBM (Fractal Brownian Motion) matching the PerlinFlowField
-      const fbm = (y: number, time: number) => {
-        let total = 0;
-        let amplitude = 1.0;
-        let frequency = 1.0;
-        for (let i = 0; i < 3; i++) {
-          total += Math.sin(y * frequency + time) * Math.cos(y * frequency - time * 0.5) * amplitude;
-          amplitude *= 0.5;
-          frequency *= 2.0;
-        }
-        return total;
-      };
-
-      const getWavePath = (baseX: number, freq: number, amp: number, phase: number) => {
-        let path = `M 400 0 L ${baseX + fbm(0, phase) * amp} 0`;
-        for (let y = 5; y <= 250; y += 5) {
-          const x = baseX + fbm(y * freq, phase) * amp;
-          path += ` L ${x} ${y}`;
-        }
-        path += ` L 400 250 Z`;
-        return path;
-      };
-
-      if (path3Ref.current) {
-        path3Ref.current.setAttribute('d', getWavePath(250, 0.012, 18, time * 1.2));
-      }
-      if (path2Ref.current) {
-        path2Ref.current.setAttribute('d', getWavePath(265, 0.015, 14, time * 0.9 + 2));
-      }
-      if (path1Ref.current) {
-        path1Ref.current.setAttribute('d', getWavePath(280, 0.01, 20, time * 1.4 + 4));
-      }
-
-      animationFrameId = requestAnimationFrame(render);
-    };
-
-    render();
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, []);
+  const path1 = useMemo(() => getStaticWavePath(280, 0.01, 20, 4), []);
+  const path2 = useMemo(() => getStaticWavePath(265, 0.015, 14, 2), []);
+  const path3 = useMemo(() => getStaticWavePath(250, 0.012, 18, 0), []);
 
   // Mouse position values
   const x = useMotionValue(0);
@@ -117,7 +92,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         />
 
 
-        
+
         {/* Subtle noise/texture overlay for realism (gradient side only) */}
         <div 
           className="absolute inset-0 opacity-20 mix-blend-overlay z-0 pointer-events-none" 
@@ -125,10 +100,10 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         />
 
         {/* Organic Liquid Wave Accenting Section (Right 30% with Parallax Depth) */}
-        <svg viewBox="0 0 400 250" preserveAspectRatio="none" className="absolute inset-0 z-0 w-full h-full pointer-events-none drop-shadow-2xl">
+        <svg viewBox="0 0 400 250" preserveAspectRatio="none" className="absolute inset-0 z-10 w-full h-full pointer-events-none drop-shadow-2xl">
           {/* Layer 3: Back-most translucent wave */}
           <path 
-            ref={path3Ref}
+            d={path3}
             fill="#ffffff"
             opacity={0.2}
             style={{ mixBlendMode: 'screen' }}
@@ -136,7 +111,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
           
           {/* Layer 2: Mid wave (Semi-transparent white) */}
           <path 
-            ref={path2Ref}
+            d={path2}
             fill="#ffffff"
             opacity={0.4}
             style={{ mixBlendMode: 'screen' }}
@@ -144,7 +119,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
 
           {/* Layer 1: Front-most Base Wave (Solid White, crisp edge) */}
           <path 
-            ref={path1Ref}
+            d={path1}
             fill="#ffffff" 
           />
         </svg>
