@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, X, ExternalLink } from 'lucide-react';
+import InteractiveCreditCard from './InteractiveCreditCard';
 
 const initialProjects = [
   {
@@ -224,11 +225,17 @@ const ProjectGallery: React.FC = () => {
                   
                   {/* Image Mask */}
                   <div className="absolute inset-0 w-full h-full overflow-hidden">
-                    <img 
-                      src={project.image} 
-                      alt={project.title}
-                      className="absolute left-0 top-0 min-w-[1200px] h-full object-cover object-left max-w-none pointer-events-none select-none"
-                    />
+                    {project.title === 'CodeSolve Dashboard Showcase' ? (
+                      <div className="w-full h-full flex items-center justify-center bg-slate-900 pointer-events-auto">
+                        <InteractiveCreditCard className="scale-75 md:scale-100" />
+                      </div>
+                    ) : (
+                      <img 
+                        src={project.image} 
+                        alt={project.title}
+                        className="absolute left-0 top-0 min-w-[1200px] h-full object-cover object-left max-w-none pointer-events-none select-none"
+                      />
+                    )}
                   </div>
                   
                   {/* Subtle gradient on Hero card just to ensure text readability against arbitrary images */}
@@ -286,11 +293,17 @@ const ProjectGallery: React.FC = () => {
               </button>
 
               <div className="relative w-full h-64 sm:h-80 lg:h-96 shrink-0">
-                <img 
-                  src={selectedProject.image} 
-                  alt={selectedProject.title}
-                  className="w-full h-full object-cover"
-                />
+                {selectedProject.title === 'CodeSolve Dashboard Showcase' ? (
+                  <div className="w-full h-full flex items-center justify-center bg-slate-900 overflow-hidden">
+                    <InteractiveCreditCard />
+                  </div>
+                ) : (
+                  <img 
+                    src={selectedProject.image} 
+                    alt={selectedProject.title}
+                    className="w-full h-full object-cover"
+                  />
+                )}
               </div>
               
               <div className="p-8 sm:p-10 overflow-y-auto">
