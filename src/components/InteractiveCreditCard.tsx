@@ -44,6 +44,11 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
+      {/* Theme-synced outer container wash */}
+      <div 
+        className="absolute inset-0 z-0 opacity-15 pointer-events-none transition-colors duration-[1500ms]"
+        style={{ background: `linear-gradient(135deg, ${palette.primary}, ${palette.secondary})` }}
+      />
       <motion.div
         ref={ref}
         style={{
@@ -53,15 +58,10 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         }}
         className={`relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default`}
       >
-        {/* Subtle Moving Background Gradient (Opal/Pearlescent) */}
-        <motion.div 
-          className="absolute inset-0 z-0 opacity-90"
-          animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
-          transition={{ duration: 15, ease: "linear", repeat: Infinity }}
-          style={{ 
-            backgroundImage: 'linear-gradient(135deg, #fdfbfb, #f3f4f6, #e5e7eb, #fdfbfb)', 
-            backgroundSize: '300% 300%' 
-          }}
+        {/* Background vivid gradient based on active theme tokens */}
+        <div 
+          className="absolute inset-0 z-0 opacity-90 transition-colors duration-[1500ms]"
+          style={{ background: `linear-gradient(135deg, ${palette.primary}, ${palette.secondary})` }}
         />
         
         {/* Subtle noise/texture overlay for realism */}
@@ -74,7 +74,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         <div className="relative z-20 flex justify-between items-center mt-6 ml-4">
           <div className="flex items-center gap-3">
             {/* Inline SVG Contactless Wave Symbol */}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-5 w-5 text-slate-500 opacity-90">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-5 w-5 text-white/80 opacity-90">
               <path d="M5 8.5c.83 1.17.83 2.83 0 4M8 6c1.66 2.17 1.66 5.83 0 8M11 3.5c2.5 3.17 2.5 8.83 0 12" />
             </svg>
 
