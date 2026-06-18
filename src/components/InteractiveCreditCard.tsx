@@ -1,8 +1,7 @@
-import React, { useRef, Suspense } from 'react';
+import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Canvas } from '@react-three/fiber';
 import { useTheme } from '../context/ThemeContext';
-import PerlinFlowField from '../canvas/PerlinFlowField';
+import ParametricLines from './ParametricLines';
 
 const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "" }) => {
   const { palette } = useTheme();
@@ -59,19 +58,11 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
           rotateY,
           transformStyle: "preserve-3d"
         }}
-        className={`relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default`}
+        className={`relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default bg-[#0a0f1c]`}
       >
-        {/* 3D Perlin Flow Field Background (Rotated 90deg and positioned on left side) */}
+        {/* Parametric Bezier Ribbon Background */}
         <div className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-100 transition-opacity duration-[1500ms]">
-          <Suspense fallback={null}>
-            <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-              <ambientLight intensity={palette.ambientIntensity * 1.2} />
-              <PerlinFlowField 
-                rotation={[-Math.PI / 2.5, 0, -Math.PI / 6 - Math.PI / 2]} 
-                position={[-2.5, -1, -5]} 
-              />
-            </Canvas>
-          </Suspense>
+          <ParametricLines />
         </div>
 
 
