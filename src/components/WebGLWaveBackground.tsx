@@ -68,24 +68,29 @@ const fragmentShaderSource = `
     vec2 st = gl_FragCoord.xy / u_resolution.xy;
     st.x *= u_resolution.x / u_resolution.y;
 
+    // Scale coordinates for wider, larger waves
+    vec2 pos = st * 0.4;
+
     // Fluid distortion mechanics
     vec2 q = vec2(0.);
-    q.x = snoise(st + vec2(u_time * 0.1, u_time * 0.15));
-    q.y = snoise(st + vec2(u_time * 0.2, u_time * 0.1));
+    q.x = snoise(pos + vec2(u_time * 0.1, u_time * 0.15));
+    q.y = snoise(pos + vec2(u_time * 0.2, u_time * 0.1));
 
     vec2 r = vec2(0.);
-    r.x = snoise(st + 1.0 * q + vec2(1.7, 9.2) + 0.15 * u_time);
-    r.y = snoise(st + 1.0 * q + vec2(8.3, 2.8) + 0.126 * u_time);
+    r.x = snoise(pos + 0.5 * q + vec2(1.7, 9.2) + 0.15 * u_time);
+    r.y = snoise(pos + 0.5 * q + vec2(8.3, 2.8) + 0.126 * u_time);
 
-    float f = snoise(st + r);
+    float f = snoise(pos + r);
 
     // Layered color mixing based on the noise field
     vec3 color = mix(u_color1, u_color2, clamp((f*f)*4.0, 0.0, 1.0));
     color = mix(color, u_color3, clamp(length(q), 0.0, 1.0));
     color = mix(color, u_color1, clamp(length(r.x), 0.0, 1.0));
     
-    // Add some lighting / contrast
-    color *= (1.2 * f * f * f + 0.6 * f * f + 0.5 * f);
+    // Light, airy base color (white/light pink) instead of black shadows
+    vec3 base = vec3(1.0, 0.96, 0.98);
+    color = mix(base, color, clamp(f * 1.5, 0.0, 1.0));
+    color += vec3(0.05); // slight overall brighten
 
     gl_FragColor = vec4(color, 1.0);
   }
@@ -203,7 +208,7 @@ const WebGLWaveBackground: React.FC<WebGLWaveBackgroundProps> = ({
         return; // Skip drawing when not visible or hidden
       }
 
-      gl.uniform1f(timeLocation, (time - startTime) * 0.001);
+      gl.uniform1f(timeLocation, (time - startTime) * 0.0005);
       gl.uniform3f(color1Location, c1[0], c1[1], c1[2]);
       gl.uniform3f(color2Location, c2[0], c2[1], c2[2]);
       gl.uniform3f(color3Location, c3[0], c3[1], c3[2]);
