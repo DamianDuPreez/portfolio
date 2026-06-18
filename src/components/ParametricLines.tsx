@@ -44,19 +44,20 @@ const ParametricLines: React.FC<{ className?: string }> = ({ className = "" }) =
     const colorEnd = hexToRgb(palette.secondary);
     
     const gradient = ctx.createLinearGradient(0, 0, width, 0);
-    // Lower opacity with thicker lines prevents aliasing and creates buttery smooth blends
-    gradient.addColorStop(0, `rgba(${colorStart.r}, ${colorStart.g}, ${colorStart.b}, 0.15)`);
-    gradient.addColorStop(1, `rgba(${colorEnd.r}, ${colorEnd.g}, ${colorEnd.b}, 0.15)`);
+    // Higher opacity with very thick lines to match the high-quality, dense ribbon look of the original image
+    gradient.addColorStop(0, `rgba(${colorStart.r}, ${colorStart.g}, ${colorStart.b}, 0.25)`);
+    gradient.addColorStop(1, `rgba(${colorEnd.r}, ${colorEnd.g}, ${colorEnd.b}, 0.25)`);
     
     ctx.strokeStyle = gradient;
-    // Thicker lines anti-alias much better than sub-pixel lines
-    ctx.lineWidth = 1.5; 
+    // Visibly thicker lines (scaled by DPR they will look very substantial)
+    ctx.lineWidth = 4.0; 
     
     // Screen blending provides a smooth, glowing overlay without the harsh edge artifacts of 'lighter'
     ctx.globalCompositeOperation = 'screen';
 
     // Draw the parametric wireframe mesh
-    const numLines = 60; 
+    // Slightly reduced line count since the lines are much thicker now, keeping the gaps visible
+    const numLines = 45; 
     
     for (let i = 0; i < numLines; i++) {
       const t = i / numLines; // 0 to 1
