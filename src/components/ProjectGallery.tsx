@@ -1,10 +1,8 @@
-import React, { useState, Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, X, ExternalLink } from 'lucide-react';
 import InteractiveCreditCard from './InteractiveCreditCard';
-import PerlinFlowField from '../canvas/PerlinFlowField';
-import { useTheme } from '../context/ThemeContext';
+import PastelPencilBackground from './PastelPencilBackground';
 
 const initialProjects = [
   { id: 1, title: '', category: '', image: '', description: '' },
@@ -26,7 +24,7 @@ const initialProjects = [
 ];
 
 const ProjectGallery: React.FC = () => {
-  const { palette } = useTheme();
+
   const [absoluteIndex, setAbsoluteIndex] = useState(3);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [direction, setDirection] = useState(1);
@@ -188,14 +186,9 @@ const ProjectGallery: React.FC = () => {
                   >
                     {project.title === 'CodeSolve Dashboard Showcase' ? (
                       <div className="w-full h-full flex items-center justify-center pointer-events-auto relative">
-                        {/* 3D Perlin Flow Field in the slide background behind the credit card */}
-                        <div className="absolute inset-0 z-0 pointer-events-none">
-                          <Suspense fallback={null}>
-                            <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-                              <ambientLight intensity={palette.ambientIntensity * 1.2} />
-                              <PerlinFlowField />
-                            </Canvas>
-                          </Suspense>
+                        {/* Static Pastel Pencil Background */}
+                        <div className="absolute inset-0 z-0">
+                          <PastelPencilBackground />
                         </div>
                         
                         {/* Floating Credit Card on top */}
@@ -277,15 +270,10 @@ const ProjectGallery: React.FC = () => {
 
               <div className="relative w-full h-64 sm:h-80 lg:h-96 shrink-0">
                 {selectedProject.title === 'CodeSolve Dashboard Showcase' ? (
-                  <div className="w-full h-full flex items-center justify-center bg-slate-900 overflow-hidden relative">
-                    {/* 3D Perlin Flow Field in the modal background behind the credit card */}
-                    <div className="absolute inset-0 z-0 pointer-events-none">
-                      <Suspense fallback={null}>
-                        <Canvas camera={{ position: [0, 0, 7], fov: 45 }}>
-                          <ambientLight intensity={palette.ambientIntensity * 1.2} />
-                          <PerlinFlowField />
-                        </Canvas>
-                      </Suspense>
+                  <div className="w-full h-full flex items-center justify-center overflow-hidden relative">
+                    {/* Static Pastel Pencil Background */}
+                    <div className="absolute inset-0 z-0">
+                      <PastelPencilBackground />
                     </div>
 
                     {/* Floating Credit Card on top */}
