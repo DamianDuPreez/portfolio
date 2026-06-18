@@ -61,15 +61,15 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         }}
         className={`relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default`}
       >
-        {/* 3D Perlin Flow Field Background (Masked to left side) */}
-        <div 
-          className="absolute top-0 left-0 w-[65%] h-full overflow-hidden pointer-events-none z-0 opacity-100 transition-opacity duration-[1500ms]"
-          style={{ clipPath: 'polygon(0% 0%, 100% 0%, 75% 100%, 0% 100%)' }}
-        >
+        {/* 3D Perlin Flow Field Background (Rotated 90deg and positioned on left side) */}
+        <div className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-100 transition-opacity duration-[1500ms]">
           <Suspense fallback={null}>
             <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
               <ambientLight intensity={palette.ambientIntensity * 1.2} />
-              <PerlinFlowField />
+              <PerlinFlowField 
+                rotation={[-Math.PI / 2.5, 0, -Math.PI / 6 - Math.PI / 2]} 
+                position={[-2.5, -1, -5]} 
+              />
             </Canvas>
           </Suspense>
         </div>

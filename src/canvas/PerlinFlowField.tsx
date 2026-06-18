@@ -18,7 +18,15 @@ const fbm = (x: number, y: number, z: number) => {
   return total;
 };
 
-const PerlinFlowField: React.FC = () => {
+interface PerlinFlowFieldProps {
+  rotation?: [number, number, number];
+  position?: [number, number, number];
+}
+
+const PerlinFlowField: React.FC<PerlinFlowFieldProps> = ({
+  rotation = [-Math.PI / 2.5, 0, -Math.PI / 6],
+  position = [0, -1, -5]
+}) => {
   const { palette } = useTheme();
   const geomRef = useRef<THREE.PlaneGeometry>(null);
   
@@ -79,7 +87,7 @@ const PerlinFlowField: React.FC = () => {
 
   return (
     // Tilted landscape perspective, exactly like the original lines
-    <group rotation={[-Math.PI / 2.5, 0, -Math.PI / 6]} position={[0, -1, -5]}>
+    <group rotation={rotation} position={position}>
       <mesh>
         <planeGeometry ref={geomRef} args={[width, height, segmentsX, segmentsY]} />
         {/* Using MeshBasicMaterial to keep the flat, unlit color style from the lines */}
