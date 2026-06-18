@@ -180,37 +180,43 @@ const ProjectGallery: React.FC = () => {
                 >
                   
                   {/* Image Mask */}
-                  <div 
-                    className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center"
-                    style={{ background: 'linear-gradient(135deg, #020617 0%, #1e1b4b 50%, #042f2e 100%)' }}
-                  >
+                  <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
                     {project.title === 'CodeSolve Dashboard Showcase' ? (
-                      <div className="w-full h-full flex items-center justify-center pointer-events-auto relative">
+                      <div className="w-full h-full flex items-center justify-center pointer-events-auto relative z-10">
                         {/* Static Pastel Pencil Background */}
-                        <div className="absolute inset-0 z-0">
-                          <PastelPencilBackground />
-                        </div>
+                        <PastelPencilBackground />
                         
                         {/* Floating Credit Card on top */}
-                        <div className="relative z-10 pointer-events-auto flex items-center justify-center w-full h-full">
-                          <InteractiveCreditCard className="scale-75 md:scale-100" />
+                        <div 
+                          className={`relative z-10 pointer-events-auto flex items-center justify-center w-full h-full transition-all duration-[600ms] ease-in-out origin-center ${
+                            isHero 
+                              ? 'scale-90 md:scale-100 opacity-100' 
+                              : 'scale-50 md:scale-55 opacity-60 hover:opacity-90'
+                          }`}
+                        >
+                          <InteractiveCreditCard />
                         </div>
                       </div>
                     ) : (
-                      <>
+                      <div className="absolute inset-0 w-full h-full bg-slate-100 dark:bg-slate-900/60 flex items-center justify-center transition-colors duration-[1500ms]">
+                        {/* Subtle noise pattern for greyed out texture */}
+                        <div 
+                          className="absolute inset-0 opacity-5 mix-blend-overlay pointer-events-none" 
+                          style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}
+                        />
                         {project.image && (
                           <img 
                             src={project.image} 
                             alt={project.title}
-                            className="absolute left-0 top-0 min-w-[1200px] h-full object-cover object-left max-w-none pointer-events-none select-none opacity-30 grayscale mix-blend-luminosity"
+                            className="absolute left-0 top-0 min-w-[1200px] h-full object-cover object-left max-w-none pointer-events-none select-none opacity-10 grayscale mix-blend-luminosity z-10"
                           />
                         )}
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
                            {visualIndex <= 1 && (
-                             <span className="text-white/90 font-medium tracking-widest uppercase text-[10px] whitespace-nowrap bg-black/60 px-4 py-2 rounded-full backdrop-blur-md border border-white/10 shadow-xl">Coming Soon</span>
+                             <span className="text-slate-400 dark:text-slate-500 font-medium tracking-widest uppercase text-[10px] whitespace-nowrap bg-slate-200/50 dark:bg-slate-950/40 px-4 py-2 rounded-full border border-slate-300/30 dark:border-slate-800/20 shadow-md backdrop-blur-md">Coming Soon</span>
                            )}
                         </div>
-                      </>
+                      </div>
                     )}
                   </div>
                   
@@ -282,11 +288,23 @@ const ProjectGallery: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <img 
-                    src={selectedProject.image} 
-                    alt={selectedProject.title}
-                    className="w-full h-full object-cover"
-                  />
+                  <div className="w-full h-full flex items-center justify-center overflow-hidden relative bg-slate-100 dark:bg-slate-900/60">
+                    <div 
+                      className="absolute inset-0 opacity-5 mix-blend-overlay pointer-events-none" 
+                      style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}
+                    />
+                    {selectedProject.image ? (
+                      <img 
+                        src={selectedProject.image} 
+                        alt={selectedProject.title}
+                        className="absolute inset-0 w-full h-full object-cover z-10"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                        <span className="text-slate-400 dark:text-slate-500 font-medium tracking-widest uppercase text-[10px] whitespace-nowrap bg-slate-200/50 dark:bg-slate-950/40 px-4 py-2 rounded-full border border-slate-300/30 dark:border-slate-800/20 shadow-md backdrop-blur-md">Coming Soon</span>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
               

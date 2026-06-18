@@ -68,7 +68,7 @@ const getWaveColor = (z: number, timeOfDay: string): string => {
 };
 
 const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "" }) => {
-  const { palette, activeTimeOfDay } = useTheme();
+  const { activeTimeOfDay } = useTheme();
   const ref = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -235,15 +235,10 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
 
   return (
     <div 
-      className={`relative flex items-center justify-center w-full h-full perspective-[1000px] overflow-visible ${palette.isDark ? 'bg-slate-900' : 'bg-slate-100'} ${className} transition-colors duration-[1500ms]`}
+      className={`relative flex items-center justify-center w-full h-full perspective-[1000px] overflow-visible bg-transparent ${className}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Theme-synced outer container wash */}
-      <div 
-        className="absolute inset-0 z-0 opacity-15 pointer-events-none transition-colors duration-[1500ms]"
-        style={{ background: `linear-gradient(135deg, ${palette.primary}, ${palette.secondary})` }}
-      />
       <motion.div
         ref={ref}
         style={{
@@ -251,7 +246,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
           rotateY,
           transformStyle: "preserve-3d"
         }}
-        className="relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default bg-white"
+        className="relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default bg-white shrink-0"
       >
         {/* HTML5 Canvas for the 3D Ocean Wave lines */}
         <canvas 
