@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
-
+import WebGLWaveBackground from './WebGLWaveBackground';
 
 const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "" }) => {
   const { palette } = useTheme();
@@ -60,11 +60,13 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         }}
         className={`relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default`}
       >
-        {/* Background vivid gradient based on active theme tokens */}
-        <div 
-          className="absolute inset-0 z-0 opacity-90 transition-colors duration-[1500ms]"
-          style={{ background: `linear-gradient(135deg, ${palette.primary}, ${palette.secondary})` }}
-        />
+        {/* Stripe-Inspired WebGL Animated Wave Background */}
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-90 transition-opacity duration-[1500ms]">
+          <WebGLWaveBackground 
+            color1={palette.primary} 
+            color2={palette.secondary}
+          />
+        </div>
 
 
 
