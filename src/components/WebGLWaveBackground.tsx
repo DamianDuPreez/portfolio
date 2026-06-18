@@ -35,24 +35,42 @@ const fragmentShaderSource = `
   void main() {
     vec2 rawUV = gl_FragCoord.xy / u_resolution.xy;
     
-    // Slow, soft undulation
-    float t = u_time * 0.15;
+    // Sped up by 50%
+    float t = u_time * 0.225;
     
-    // Warp the coordinates to create sweeping, natural curves
-    float warp = sin(rawUV.y * 3.5 + t) * 0.15 + cos(rawUV.x * 2.5 - t * 0.8) * 0.15;
+    // Complex overlapping folds for a 3D flag/ribbon effect
+    float fold1 = sin(rawUV.y * 4.0 + rawUV.x * 2.0 + t);
+    float fold2 = cos(rawUV.x * 5.0 - rawUV.y * 3.0 - t * 1.2);
+    
+    // Warp the coordinates to create sweeping, wavy curves (less like straight lines)
+    float warp = fold1 * 0.15 + fold2 * 0.1;
     
     // Calculate the diagonal gradient value 'v'
-    // By weighting x heavily negatively, we ensure the right side drops into the white threshold.
-    float v = (1.0 - rawUV.x) * 1.8 + rawUV.y * 1.2 + warp - 0.6;
+    // Increased warp influence to make the boundaries very wavy and organic
+    float v = (1.0 - rawUV.x) * 1.8 + rawUV.y * 1.2 + warp * 1.5 - 0.6;
 
-    // Smoothly mix the colors based on v
+    // Smoothly mix the base colors based on v
     vec3 color = u_color4; // Bright orange base
     
     color = mix(color, u_color3, smoothstep(0.2, 0.5, v));  // Orange -> Purple
     color = mix(color, u_color2, smoothstep(0.4, 0.8, v));  // Purple -> Pink
     color = mix(color, u_color1, smoothstep(0.8, 1.5, v));  // Pink -> Blue
 
-    // Fade to stark white on the right/bottom-right
+    // --- 3D Shading & Washing Effect ---
+    // Simulate directional lighting by shifting the phase of the folds by pi/2 (approx 1.57)
+    float light1 = sin(rawUV.y * 4.0 + rawUV.x * 2.0 + t + 1.57);
+    float light2 = cos(rawUV.x * 5.0 - rawUV.y * 3.0 - t * 1.2 + 1.57);
+    float shading = light1 * 0.15 + light2 * 0.1; 
+    
+    // Apply lighting: darkens valleys, brightens peaks. 
+    // Base is 0.85 to dim the overall brightness as requested.
+    color *= (0.85 + shading * 0.6);
+    
+    // Wash the colors out to make them softer and less solid
+    vec3 mutedTone = vec3(0.88, 0.85, 0.88); // Soft warm grey
+    color = mix(color, mutedTone, 0.25); // Blend 25% to wash out
+
+    // Fade to white on the right/bottom-right
     vec3 white = vec3(1.0);
     // This creates the sweeping, soft border between color and white
     color = mix(white, color, smoothstep(0.1, 0.45, v));
