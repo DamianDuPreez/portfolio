@@ -43,41 +43,41 @@ const ParametricLines: React.FC<{ className?: string }> = ({ className = "" }) =
     const colorEnd = hexToRgb(palette.secondary);
     
     const gradient = ctx.createLinearGradient(0, 0, width, 0);
-    // 0.2 opacity gives a massive glowing effect when hundreds of lines overlap
-    gradient.addColorStop(0, `rgba(${colorStart.r}, ${colorStart.g}, ${colorStart.b}, 0.25)`);
-    gradient.addColorStop(1, `rgba(${colorEnd.r}, ${colorEnd.g}, ${colorEnd.b}, 0.25)`);
+    // Higher opacity but fewer lines prevents blowout while keeping colors vivid
+    gradient.addColorStop(0, `rgba(${colorStart.r}, ${colorStart.g}, ${colorStart.b}, 0.5)`);
+    gradient.addColorStop(1, `rgba(${colorEnd.r}, ${colorEnd.g}, ${colorEnd.b}, 0.5)`);
     
     ctx.strokeStyle = gradient;
-    ctx.lineWidth = 1.2; // Hair-thin lines
+    ctx.lineWidth = 0.8; // Sub-pixel precision for crisp hair-thin lines
     
-    // Use screen blend mode for a luminous, additive glowing effect
-    ctx.globalCompositeOperation = 'screen';
+    // Additive blending for a luminous glowing effect where lines cross
+    ctx.globalCompositeOperation = 'lighter';
 
     // Draw the parametric wireframe mesh
-    const numLines = 180; // Dense line count matching the reference image
+    // Drastically reduced line count so individual lines are crisp and distinct on a small card
+    const numLines = 50; 
     
     for (let i = 0; i < numLines; i++) {
       const t = i / numLines; // 0 to 1
       
       ctx.beginPath();
       
-      // Start on the left, slightly below center
+      // Start on the left, bundled tightly
       const startX = -50; 
-      // Spread vertically
-      const startY = height * 0.7 + (t - 0.5) * 80; 
+      const startY = height * 0.65 + (t - 0.5) * (height * 0.15); 
       
       // Control point 1: Pulls right and DOWN into the tight pinch.
       // We invert `t` here (minus sign) to force the top lines to cross over the bottom lines.
       const cp1X = width * 0.4;
-      const cp1Y = height * 0.95 - (t - 0.5) * 120; 
+      const cp1Y = height * 0.85 - (t - 0.5) * (height * 0.1); 
       
       // Control point 2: Pushes the curve up towards the massive top-right sweep
       const cp2X = width * 0.65;
-      const cp2Y = height * 0.3 - (t - 0.5) * 400; 
+      const cp2Y = height * 0.35 - (t - 0.5) * (height * 0.9); 
       
       // End point: Far right, sweeping dramatically upwards and spreading out massively
       const endX = width + 50;
-      const endY = height * 0.1 - (t - 0.5) * 700; 
+      const endY = height * 0.1 - (t - 0.5) * (height * 1.8); 
       
       ctx.moveTo(startX, startY);
       ctx.bezierCurveTo(cp1X, cp1Y, cp2X, cp2Y, endX, endY);
