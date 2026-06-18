@@ -27,59 +27,78 @@ const fragmentShaderSource = `
   varying vec2 v_uv;
   uniform float u_time;
   uniform vec2 u_resolution;
-  uniform vec3 u_color1;
-  uniform vec3 u_color2;
-  uniform vec3 u_color3;
-  uniform vec3 u_color4;
+  uniform vec3 u_color1; // Soft Blue
+  uniform vec3 u_color2; // Deep Pink
+  uniform vec3 u_color3; // Vivid Purple
+  uniform vec3 u_color4; // Bright Orange
 
   void main() {
-    vec2 rawUV = gl_FragCoord.xy / u_resolution.xy;
-    
-    // Sped up by 50%
-    float t = u_time * 0.225;
-    
-    // Complex overlapping folds for a 3D flag/ribbon effect
-    float fold1 = sin(rawUV.y * 4.0 + rawUV.x * 2.0 + t);
-    float fold2 = cos(rawUV.x * 5.0 - rawUV.y * 3.0 - t * 1.2);
-    
-    // Warp the coordinates to create sweeping, wavy curves (less like straight lines)
-    float warp = fold1 * 0.15 + fold2 * 0.1;
-    
-    // Calculate the diagonal gradient value 'v'
-    // Increased warp influence to make the boundaries very wavy and organic
-    float v = (1.0 - rawUV.x) * 1.8 + rawUV.y * 1.2 + warp * 1.5 - 0.6;
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    float t = u_time * 0.2;
 
-    // Smoothly mix the base colors based on v
-    vec3 color = u_color4; // Bright orange base
-    
-    color = mix(color, u_color3, smoothstep(0.2, 0.5, v));  // Orange -> Purple
-    color = mix(color, u_color2, smoothstep(0.4, 0.8, v));  // Purple -> Pink
-    color = mix(color, u_color1, smoothstep(0.8, 1.5, v));  // Pink -> Blue
+    // Background is stark white
+    vec3 finalColor = vec3(1.0);
 
-    // --- 3D Shading & Washing Effect ---
-    // Simulate directional lighting by shifting the phase of the folds by pi/2 (approx 1.57)
-    float light1 = sin(rawUV.y * 4.0 + rawUV.x * 2.0 + t + 1.57);
-    float light2 = cos(rawUV.x * 5.0 - rawUV.y * 3.0 - t * 1.2 + 1.57);
-    float shading = light1 * 0.15 + light2 * 0.1; 
-    
-    // Apply lighting: darkens valleys, brightens peaks. 
-    // Base is 0.85 to dim the overall brightness as requested.
-    color *= (0.85 + shading * 0.6);
-    
-    // Wash the colors out to make them softer and less solid
-    vec3 mutedTone = vec3(0.88, 0.85, 0.88); // Soft warm grey
-    color = mix(color, mutedTone, 0.25); // Blend 25% to wash out
+    // Array of colors for the 4 ribbon layers
+    // We draw from back to front: Orange, Purple, Pink, Blue
+    vec3 colors[4];
+    colors[0] = u_color4; 
+    colors[1] = u_color3; 
+    colors[2] = u_color2; 
+    colors[3] = u_color1; 
 
-    // Fade to white on the right/bottom-right
-    vec3 white = vec3(1.0);
-    // This creates the sweeping, soft border between color and white
-    color = mix(white, color, smoothstep(0.1, 0.45, v));
-    
-    // Add subtle, high-frequency film grain for a premium texture
-    float grain = fract(sin(dot(rawUV.xy, vec2(12.9898, 78.233))) * 43758.5453);
-    color += (grain - 0.5) * 0.04;
+    // Iterate through layers
+    for(int i = 0; i < 4; i++) {
+        float fi = float(i);
+        
+        // Independent movement for each ribbon
+        float speed = t * (0.8 + fi * 0.2);
+        float freqX = 1.5 + fi * 0.4;
+        
+        // High-amplitude intersecting waves so ribbons overlap and hide/reveal each other
+        float wave1 = sin(uv.x * freqX + speed) * 0.35;
+        float wave2 = cos(uv.x * (freqX * 0.7) - speed * 1.3) * 0.25;
+        float wave = wave1 + wave2;
 
-    gl_FragColor = vec4(color, 1.0);
+        // Base sweeping curve
+        // Small vertical offset (fi * 0.15) ensures they stay roughly in order but easily intersect due to the massive wave amplitude
+        float baseCurve = (1.0 - uv.x) * 2.0 - 0.4 + (fi * 0.15);
+        
+        // The Y-coordinate of this ribbon's top edge
+        float edgeY = baseCurve + wave;
+
+        // Mask: 1.0 if pixel is below the ribbon's edge
+        float edgeWidth = 0.015; // Smooth anti-aliased edge
+        float mask = smoothstep(edgeWidth, -edgeWidth, uv.y - edgeY);
+
+        // Specular Highlights ("White lines" for 3D realism)
+        // High intensity right at the edge, fading downwards
+        float highlight = smoothstep(edgeWidth * 4.0, 0.0, edgeY - uv.y) * 0.65;
+        // Add a shimmer effect so the highlight rolls along the ribbon
+        highlight *= (sin(uv.x * 8.0 + speed * 2.5) * 0.5 + 0.5);
+
+        // Drop Shadow cast onto the background/layers underneath
+        // Casts slightly above the edge
+        float shadow = smoothstep(0.15, 0.0, uv.y - edgeY) * 0.4;
+        
+        // Apply shadow to whatever is currently behind this ribbon
+        vec3 bgWithShadow = finalColor * (1.0 - shadow);
+
+        // Calculate final color of this ribbon pixel
+        vec3 ribbonColor = colors[i] + vec3(highlight);
+        
+        // Wash out the color slightly for that premium pastel/matte look
+        ribbonColor = mix(ribbonColor, vec3(0.9, 0.88, 0.9), 0.15);
+
+        // Composite the ribbon over the background
+        finalColor = mix(bgWithShadow, ribbonColor, mask);
+    }
+
+    // Subtle film grain overlay
+    float grain = fract(sin(dot(uv.xy, vec2(12.9898, 78.233))) * 43758.5453);
+    finalColor += (grain - 0.5) * 0.04;
+
+    gl_FragColor = vec4(finalColor, 1.0);
   }
 `;
 
