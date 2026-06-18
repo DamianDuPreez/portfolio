@@ -30,6 +30,7 @@ const fragmentShaderSource = `
   uniform vec3 u_color1;
   uniform vec3 u_color2;
   uniform vec3 u_color3;
+  uniform vec3 u_color4;
 
   // Simple noise function
   vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -37,10 +38,7 @@ const fragmentShaderSource = `
   vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
 
   float snoise(vec2 v) {
-    const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0
-                        0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)
-                       -0.577350269189626,  // -1.0 + 2.0 * C.x
-                        0.024390243902439); // 1.0 / 41.0
+    const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
     vec2 i  = floor(v + dot(v, C.yy) );
     vec2 x0 = v -   i + dot(i, C.xx);
     vec2 i1;
@@ -48,8 +46,7 @@ const fragmentShaderSource = `
     vec4 x12 = x0.xyxy + C.xxzz;
     x12.xy -= i1;
     i = mod289(i);
-    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
-    + i.x + vec3(0.0, i1.x, 1.0 ));
+    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
     vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
     m = m*m;
     m = m*m;
@@ -65,32 +62,46 @@ const fragmentShaderSource = `
   }
 
   void main() {
-    vec2 st = gl_FragCoord.xy / u_resolution.xy;
-    st.x *= u_resolution.x / u_resolution.y;
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    uv.x *= u_resolution.x / u_resolution.y;
 
-    // Scale coordinates for wider, larger waves
-    vec2 pos = st * 0.4;
+    float t = u_time * 0.15; // Slow, smooth animation
 
-    // Fluid distortion mechanics
-    vec2 q = vec2(0.);
-    q.x = snoise(pos + vec2(u_time * 0.1, u_time * 0.15));
-    q.y = snoise(pos + vec2(u_time * 0.2, u_time * 0.1));
+    // Domain warping for fluid curtain folds
+    vec2 q = vec2(0.0);
+    q.x = snoise(uv * 1.5 + vec2(t * 0.1, t * 0.2));
+    q.y = snoise(uv * 1.5 + vec2(t * 0.2, t * 0.1));
 
-    vec2 r = vec2(0.);
-    r.x = snoise(pos + 0.5 * q + vec2(1.7, 9.2) + 0.15 * u_time);
-    r.y = snoise(pos + 0.5 * q + vec2(8.3, 2.8) + 0.126 * u_time);
+    vec2 r = vec2(0.0);
+    r.x = snoise(uv * 2.0 + q + vec2(1.7, 9.2) + 0.15 * t);
+    r.y = snoise(uv * 2.0 + q + vec2(8.3, 2.8) + 0.126 * t);
 
-    float f = snoise(pos + r);
+    float f = snoise(uv * 1.5 + r);
 
-    // Layered color mixing based on the noise field
-    vec3 color = mix(u_color1, u_color2, clamp((f*f)*4.0, 0.0, 1.0));
-    color = mix(color, u_color3, clamp(length(q), 0.0, 1.0));
-    color = mix(color, u_color1, clamp(length(r.x), 0.0, 1.0));
+    // High-frequency striations (threads) mimicking stretched silk
+    float threads = sin((uv.x + r.x) * 120.0 + (uv.y + r.y) * 120.0) * 0.04;
+    threads += sin((uv.x - q.x) * 160.0 + (uv.y + q.y) * 160.0) * 0.02;
+
+    // Smooth ribbon shape
+    float mask1 = smoothstep(0.1, 0.8, f + threads);
+    float mask2 = smoothstep(0.3, 0.9, length(q) + threads);
+    float mask3 = smoothstep(0.0, 0.7, length(r.x) + threads);
+
+    // Color blending
+    vec3 color = mix(u_color1, u_color2, mask1);
+    color = mix(color, u_color3, mask2);
+    color = mix(color, u_color4, mask3);
+
+    // Base background (Stark White)
+    vec3 bg = vec3(1.0, 1.0, 1.0);
     
-    // Light, airy base color (white/light pink) instead of black shadows
-    vec3 base = vec3(1.0, 0.96, 0.98);
-    color = mix(base, color, clamp(f * 1.5, 0.0, 1.0));
-    color += vec3(0.05); // slight overall brighten
+    // Ribbon bounds mask (so it swoops diagonally across white)
+    float ribbonMask = smoothstep(0.15, 0.75, f + length(q) * 0.6 + threads);
+    
+    color = mix(bg, color, ribbonMask);
+    
+    // Tiny overall brightness boost
+    color += vec3(0.02);
 
     gl_FragColor = vec4(color, 1.0);
   }
@@ -123,17 +134,7 @@ function createProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fra
   return program;
 }
 
-interface WebGLWaveBackgroundProps {
-  color1?: string;
-  color2?: string;
-  className?: string;
-}
-
-const WebGLWaveBackground: React.FC<WebGLWaveBackgroundProps> = ({ 
-  color1 = '#0ea5e9', 
-  color2 = '#8b5cf6',
-  className = ''
-}) => {
+const WebGLWaveBackground: React.FC<{ className?: string }> = ({ className = '' }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -177,12 +178,13 @@ const WebGLWaveBackground: React.FC<WebGLWaveBackgroundProps> = ({
     const color1Location = gl.getUniformLocation(program, "u_color1");
     const color2Location = gl.getUniformLocation(program, "u_color2");
     const color3Location = gl.getUniformLocation(program, "u_color3");
+    const color4Location = gl.getUniformLocation(program, "u_color4");
 
-    // Colors mapping (mixing an intermediate color)
-    const c1 = hexToRgb(color1);
-    const c2 = hexToRgb(color2);
-    // Create a 3rd accent color by mixing c1 and c2
-    const c3: [number, number, number] = [(c1[0] + c2[0]) / 2 + 0.2, (c1[1] + c2[1]) / 2, (c1[2] + c2[2]) / 2 + 0.2];
+    // Hardcoded Reference Colors
+    const c1 = hexToRgb('#7ca8ff'); // Soft blue
+    const c2 = hexToRgb('#ff5ebd'); // Deep pink
+    const c3 = hexToRgb('#8c52ff'); // Vivid purple
+    const c4 = hexToRgb('#ff8e52'); // Bright orange
 
     const resize = () => {
       // Adjust resolution by dpr for high-dpi screens
@@ -208,10 +210,11 @@ const WebGLWaveBackground: React.FC<WebGLWaveBackgroundProps> = ({
         return; // Skip drawing when not visible or hidden
       }
 
-      gl.uniform1f(timeLocation, (time - startTime) * 0.0005);
+      gl.uniform1f(timeLocation, (time - startTime) * 0.001); // Standard multiplier, slowed inside shader
       gl.uniform3f(color1Location, c1[0], c1[1], c1[2]);
       gl.uniform3f(color2Location, c2[0], c2[1], c2[2]);
       gl.uniform3f(color3Location, c3[0], c3[1], c3[2]);
+      gl.uniform3f(color4Location, c4[0], c4[1], c4[2]);
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       animationFrameId = requestAnimationFrame(render);
@@ -245,7 +248,7 @@ const WebGLWaveBackground: React.FC<WebGLWaveBackgroundProps> = ({
       gl.deleteShader(vertexShader);
       gl.deleteShader(fragmentShader);
     };
-  }, [color1, color2]);
+  }, []);
 
   return (
     <canvas 
