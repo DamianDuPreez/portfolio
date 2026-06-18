@@ -21,8 +21,9 @@ const ParametricLines: React.FC<{ className?: string }> = ({ className = "" }) =
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Handle high-DPI displays for perfectly sharp, non-pixelated lines
-    const dpr = window.devicePixelRatio || 1;
+    // SUPER-SAMPLING: Multiply dpr by 2 to force the browser to render at double resolution internally,
+    // which completely eliminates pixelation and aliasing when CSS scales it back down.
+    const dpr = Math.max(window.devicePixelRatio || 1, 2) * 2;
     const rect = canvas.getBoundingClientRect();
     
     // Set actual size in memory (scaled to account for extra pixel density)
@@ -43,19 +44,19 @@ const ParametricLines: React.FC<{ className?: string }> = ({ className = "" }) =
     const colorEnd = hexToRgb(palette.secondary);
     
     const gradient = ctx.createLinearGradient(0, 0, width, 0);
-    // Higher opacity but fewer lines prevents blowout while keeping colors vivid
-    gradient.addColorStop(0, `rgba(${colorStart.r}, ${colorStart.g}, ${colorStart.b}, 0.5)`);
-    gradient.addColorStop(1, `rgba(${colorEnd.r}, ${colorEnd.g}, ${colorEnd.b}, 0.5)`);
+    // Lower opacity with thicker lines prevents aliasing and creates buttery smooth blends
+    gradient.addColorStop(0, `rgba(${colorStart.r}, ${colorStart.g}, ${colorStart.b}, 0.15)`);
+    gradient.addColorStop(1, `rgba(${colorEnd.r}, ${colorEnd.g}, ${colorEnd.b}, 0.15)`);
     
     ctx.strokeStyle = gradient;
-    ctx.lineWidth = 0.8; // Sub-pixel precision for crisp hair-thin lines
+    // Thicker lines anti-alias much better than sub-pixel lines
+    ctx.lineWidth = 1.5; 
     
-    // Additive blending for a luminous glowing effect where lines cross
-    ctx.globalCompositeOperation = 'lighter';
+    // Screen blending provides a smooth, glowing overlay without the harsh edge artifacts of 'lighter'
+    ctx.globalCompositeOperation = 'screen';
 
     // Draw the parametric wireframe mesh
-    // Drastically reduced line count so individual lines are crisp and distinct on a small card
-    const numLines = 50; 
+    const numLines = 60; 
     
     for (let i = 0; i < numLines; i++) {
       const t = i / numLines; // 0 to 1
@@ -64,20 +65,19 @@ const ParametricLines: React.FC<{ className?: string }> = ({ className = "" }) =
       
       // Start on the left, bundled tightly
       const startX = -50; 
-      const startY = height * 0.65 + (t - 0.5) * (height * 0.15); 
+      const startY = height * 0.65 + (t - 0.5) * (height * 0.2); 
       
       // Control point 1: Pulls right and DOWN into the tight pinch.
-      // We invert `t` here (minus sign) to force the top lines to cross over the bottom lines.
       const cp1X = width * 0.4;
-      const cp1Y = height * 0.85 - (t - 0.5) * (height * 0.1); 
+      const cp1Y = height * 0.85 - (t - 0.5) * (height * 0.15); 
       
-      // Control point 2: Pushes the curve up towards the massive top-right sweep
-      const cp2X = width * 0.65;
-      const cp2Y = height * 0.35 - (t - 0.5) * (height * 0.9); 
+      // Control point 2: Smoothed out to prevent the harsh "hump" at the top
+      const cp2X = width * 0.7;
+      const cp2Y = height * 0.5 - (t - 0.5) * (height * 1.2); 
       
-      // End point: Far right, sweeping dramatically upwards and spreading out massively
+      // End point: Far right, sweeping dramatically upwards
       const endX = width + 50;
-      const endY = height * 0.1 - (t - 0.5) * (height * 1.8); 
+      const endY = height * 0.1 - (t - 0.5) * (height * 2.2); 
       
       ctx.moveTo(startX, startY);
       ctx.bezierCurveTo(cp1X, cp1Y, cp2X, cp2Y, endX, endY);
