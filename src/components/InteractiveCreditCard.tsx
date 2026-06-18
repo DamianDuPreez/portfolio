@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, Suspense } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { Canvas } from '@react-three/fiber';
 import { useTheme } from '../context/ThemeContext';
-import WebGLWaveBackground from './WebGLWaveBackground';
+import PerlinFlowField from '../canvas/PerlinFlowField';
 
 const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "" }) => {
   const { palette } = useTheme();
@@ -60,9 +61,17 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         }}
         className={`relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default`}
       >
-        {/* Stripe-Inspired WebGL Animated Wave Background */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0 opacity-100 transition-opacity duration-[1500ms]">
-          <WebGLWaveBackground />
+        {/* 3D Perlin Flow Field Background (Masked to left side) */}
+        <div 
+          className="absolute top-0 left-0 w-[65%] h-full overflow-hidden pointer-events-none z-0 opacity-100 transition-opacity duration-[1500ms]"
+          style={{ clipPath: 'polygon(0% 0%, 100% 0%, 75% 100%, 0% 100%)' }}
+        >
+          <Suspense fallback={null}>
+            <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+              <ambientLight intensity={palette.ambientIntensity * 1.2} />
+              <PerlinFlowField />
+            </Canvas>
+          </Suspense>
         </div>
 
 
