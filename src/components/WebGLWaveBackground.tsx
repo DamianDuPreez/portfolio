@@ -33,36 +33,33 @@ const fragmentShaderSource = `
   uniform vec3 u_color4;
 
   void main() {
-    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-    
-    float angle = 0.6; // Diagonal rotation
-    float s = sin(angle);
-    float c = cos(angle);
-    mat2 rot = mat2(c, -s, s, c);
-    
-    vec2 pos = rot * (uv - 0.5) + 0.5;
+    vec2 rawUV = gl_FragCoord.xy / u_resolution.xy;
     
     // Slow, soft undulation
     float t = u_time * 0.15;
-    float warp = sin(pos.x * 2.5 + t) * 0.15 + cos(pos.x * 1.5 - t * 0.8) * 0.15;
     
-    // The warped diagonal gradient (v)
-    float v = pos.y + warp;
+    // Warp the coordinates to create sweeping, natural curves
+    float warp = sin(rawUV.y * 3.5 + t) * 0.15 + cos(rawUV.x * 2.5 - t * 0.8) * 0.15;
+    
+    // Calculate the diagonal gradient value 'v'
+    // By weighting x heavily negatively, we ensure the right side drops into the white threshold.
+    float v = (1.0 - rawUV.x) * 1.8 + rawUV.y * 1.2 + warp - 0.6;
 
     // Smoothly mix the colors based on v
     vec3 color = u_color4; // Bright orange base
     
-    color = mix(color, u_color3, smoothstep(0.1, 0.45, v)); // transition to purple
-    color = mix(color, u_color2, smoothstep(0.35, 0.7, v)); // transition to pink
-    color = mix(color, u_color1, smoothstep(0.6, 1.0, v));  // transition to soft blue
+    color = mix(color, u_color3, smoothstep(0.2, 0.5, v));  // Orange -> Purple
+    color = mix(color, u_color2, smoothstep(0.4, 0.8, v));  // Purple -> Pink
+    color = mix(color, u_color1, smoothstep(0.8, 1.5, v));  // Pink -> Blue
 
-    // Fade to stark white at the bottom right
+    // Fade to stark white on the right/bottom-right
     vec3 white = vec3(1.0);
-    color = mix(white, color, smoothstep(0.0, 0.25, v));
+    // This creates the sweeping, soft border between color and white
+    color = mix(white, color, smoothstep(0.1, 0.45, v));
     
     // Add subtle, high-frequency film grain for a premium texture
-    float grain = fract(sin(dot(uv.xy, vec2(12.9898, 78.233))) * 43758.5453);
-    color += (grain - 0.5) * 0.05;
+    float grain = fract(sin(dot(rawUV.xy, vec2(12.9898, 78.233))) * 43758.5453);
+    color += (grain - 0.5) * 0.04;
 
     gl_FragColor = vec4(color, 1.0);
   }
