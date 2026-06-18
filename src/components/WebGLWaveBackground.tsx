@@ -32,76 +32,37 @@ const fragmentShaderSource = `
   uniform vec3 u_color3;
   uniform vec3 u_color4;
 
-  // Simple noise function
-  vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-  vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-  vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
-
-  float snoise(vec2 v) {
-    const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
-    vec2 i  = floor(v + dot(v, C.yy) );
-    vec2 x0 = v -   i + dot(i, C.xx);
-    vec2 i1;
-    i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-    vec4 x12 = x0.xyxy + C.xxzz;
-    x12.xy -= i1;
-    i = mod289(i);
-    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
-    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-    m = m*m;
-    m = m*m;
-    vec3 x = 2.0 * fract(p * C.www) - 1.0;
-    vec3 h = abs(x) - 0.5;
-    vec3 ox = floor(x + 0.5);
-    vec3 a0 = x - ox;
-    m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-    vec3 g;
-    g.x  = a0.x  * x0.x  + h.x  * x0.y;
-    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-    return 130.0 * dot(m, g);
-  }
-
   void main() {
     vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-    uv.x *= u_resolution.x / u_resolution.y;
-
-    float t = u_time * 0.15; // Slow, smooth animation
-
-    // Domain warping for fluid curtain folds
-    vec2 q = vec2(0.0);
-    q.x = snoise(uv * 1.5 + vec2(t * 0.1, t * 0.2));
-    q.y = snoise(uv * 1.5 + vec2(t * 0.2, t * 0.1));
-
-    vec2 r = vec2(0.0);
-    r.x = snoise(uv * 2.0 + q + vec2(1.7, 9.2) + 0.15 * t);
-    r.y = snoise(uv * 2.0 + q + vec2(8.3, 2.8) + 0.126 * t);
-
-    float f = snoise(uv * 1.5 + r);
-
-    // High-frequency striations (threads) mimicking stretched silk
-    float threads = sin((uv.x + r.x) * 120.0 + (uv.y + r.y) * 120.0) * 0.04;
-    threads += sin((uv.x - q.x) * 160.0 + (uv.y + q.y) * 160.0) * 0.02;
-
-    // Smooth ribbon shape
-    float mask1 = smoothstep(0.1, 0.8, f + threads);
-    float mask2 = smoothstep(0.3, 0.9, length(q) + threads);
-    float mask3 = smoothstep(0.0, 0.7, length(r.x) + threads);
-
-    // Color blending
-    vec3 color = mix(u_color1, u_color2, mask1);
-    color = mix(color, u_color3, mask2);
-    color = mix(color, u_color4, mask3);
-
-    // Base background (Stark White)
-    vec3 bg = vec3(1.0, 1.0, 1.0);
     
-    // Ribbon bounds mask (so it swoops diagonally across white)
-    float ribbonMask = smoothstep(0.15, 0.75, f + length(q) * 0.6 + threads);
+    float angle = 0.6; // Diagonal rotation
+    float s = sin(angle);
+    float c = cos(angle);
+    mat2 rot = mat2(c, -s, s, c);
     
-    color = mix(bg, color, ribbonMask);
+    vec2 pos = rot * (uv - 0.5) + 0.5;
     
-    // Tiny overall brightness boost
-    color += vec3(0.02);
+    // Slow, soft undulation
+    float t = u_time * 0.15;
+    float warp = sin(pos.x * 2.5 + t) * 0.15 + cos(pos.x * 1.5 - t * 0.8) * 0.15;
+    
+    // The warped diagonal gradient (v)
+    float v = pos.y + warp;
+
+    // Smoothly mix the colors based on v
+    vec3 color = u_color4; // Bright orange base
+    
+    color = mix(color, u_color3, smoothstep(0.1, 0.45, v)); // transition to purple
+    color = mix(color, u_color2, smoothstep(0.35, 0.7, v)); // transition to pink
+    color = mix(color, u_color1, smoothstep(0.6, 1.0, v));  // transition to soft blue
+
+    // Fade to stark white at the bottom right
+    vec3 white = vec3(1.0);
+    color = mix(white, color, smoothstep(0.0, 0.25, v));
+    
+    // Add subtle, high-frequency film grain for a premium texture
+    float grain = fract(sin(dot(uv.xy, vec2(12.9898, 78.233))) * 43758.5453);
+    color += (grain - 0.5) * 0.05;
 
     gl_FragColor = vec4(color, 1.0);
   }

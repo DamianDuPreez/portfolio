@@ -61,10 +61,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         className={`relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default`}
       >
         {/* Stripe-Inspired WebGL Animated Wave Background */}
-        <div 
-          className="absolute top-0 left-0 w-[65%] h-full overflow-hidden pointer-events-none z-0 opacity-90 transition-opacity duration-[1500ms]"
-          style={{ clipPath: 'polygon(0% 0%, 100% 0%, 75% 100%, 0% 100%)' }}
-        >
+        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0 opacity-100 transition-opacity duration-[1500ms]">
           <WebGLWaveBackground />
         </div>
 
