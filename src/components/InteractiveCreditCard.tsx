@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
-import ParametricLines from './ParametricLines';
 
 const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "" }) => {
   const { palette } = useTheme();
@@ -58,12 +57,8 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
           rotateY,
           transformStyle: "preserve-3d"
         }}
-        className={`relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default bg-[#0a0f1c]`}
+        className={`relative w-[340px] h-[215px] sm:w-[400px] sm:h-[250px] rounded-2xl p-6 shadow-2xl flex flex-col justify-between overflow-hidden cursor-default bg-white`}
       >
-        {/* Parametric Bezier Ribbon Background */}
-        <div className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-100 transition-opacity duration-[1500ms]">
-          <ParametricLines />
-        </div>
 
 
 
@@ -77,7 +72,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         <div className="relative z-20 flex justify-between items-center mt-6 ml-4">
           <div className="flex items-center gap-3">
             {/* Inline SVG Contactless Wave Symbol */}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-6 w-6 text-white/80 opacity-90 shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-6 w-6 text-slate-700 opacity-90 shrink-0">
               <path d="M5 8.5c.83 1.17.83 2.83 0 4M8 6c1.66 2.17 1.66 5.83 0 8M11 3.5c2.5 3.17 2.5 8.83 0 12" />
             </svg>
 
