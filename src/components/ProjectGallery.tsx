@@ -176,7 +176,9 @@ const ProjectGallery: React.FC = () => {
                   onMouseEnter={() => {
                     setHoveredIndex(visualIndex);
                   }}
-                  className="relative h-full overflow-hidden cursor-pointer rounded-xl bg-slate-100 dark:bg-gray-900"
+                  className={`relative h-full overflow-hidden cursor-pointer rounded-xl bg-slate-100 dark:bg-gray-900 ${
+                    isHero ? 'w-full md:w-auto' : 'hidden md:block'
+                  }`}
                 >
                   
                   {/* Image Mask */}

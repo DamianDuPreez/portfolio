@@ -1,7 +1,7 @@
 import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
-import AboutSection from './components/AboutSection';
+import AboutMe from './components/AboutMe';
 import ProjectGallery from './components/ProjectGallery';
 import ContactForm from './components/ContactForm';
 
@@ -12,7 +12,7 @@ function AppContent() {
       
       <main>
         <HeroSection />
-        <AboutSection />
+        <AboutMe />
         <ProjectGallery />
         <ContactForm />
       </main>
