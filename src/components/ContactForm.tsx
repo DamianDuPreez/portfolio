@@ -43,7 +43,12 @@ const ContactForm: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Email</p>
-                  <p className="text-gray-900 dark:text-white font-medium">hello@portfolio.com</p>
+                  <a 
+                    href="mailto:damian@codesolve.co.za" 
+                    className="text-gray-900 dark:text-white font-medium hover:text-brand-500 transition-colors"
+                  >
+                    damian@codesolve.co.za
+                  </a>
                 </div>
               </div>
           </motion.div>
@@ -64,7 +69,7 @@ const ContactForm: React.FC = () => {
                 Project intake, custom Web SaaS scoping, and cloud consulting infrastructure management are handled exclusively through our corporate storefront.
               </p>
               <a
-                href="https://codesolve.com"
+                href="https://damian-portfolio-2026.web.app"
                 className="group inline-flex justify-center items-center px-6 py-2.5 mt-4 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-600 hover:bg-brand-700 transition-colors whitespace-nowrap"
               >
                 Start Project Scoping

@@ -21,9 +21,7 @@ function AppContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between">
           <p>&copy; {new Date().getFullYear()} Portfolio. All rights reserved.</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">Twitter</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">LinkedIn</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">GitHub</a>
+            {/* <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">GitHub</a> */}
           </div>
         </div>
       </footer>
