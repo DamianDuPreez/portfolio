@@ -25,7 +25,7 @@ interface PerlinFlowFieldProps {
 
 const PerlinFlowField: React.FC<PerlinFlowFieldProps> = ({
   rotation = [-Math.PI / 2.5, 0, -Math.PI / 6],
-  position = [0, -1, -5]
+  position = [-14, -1, -5]
 }) => {
   const { palette } = useTheme();
   const geomRef = useRef<THREE.PlaneGeometry>(null);
@@ -34,7 +34,7 @@ const PerlinFlowField: React.FC<PerlinFlowFieldProps> = ({
   const currentColorHighRef = useRef(new THREE.Color(palette.secondary));
   
   // Keep the exact same massive scale as the original lines
-  const width = 120;
+  const width = 150;
   const height = 18; 
   
   // Solid sheets need much less geometry than lines for flawless curves

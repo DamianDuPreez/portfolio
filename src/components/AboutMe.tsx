@@ -60,6 +60,7 @@ const SkillColumn: React.FC<SkillColumnProps> = ({ title, description }) => {
       isIdle: boolean;
       depth: number;
       travelHeight: number;
+      colorType: 'primary' | 'secondary';
     }
 
     let particles: Particle[] = [];
@@ -81,7 +82,8 @@ const SkillColumn: React.FC<SkillColumnProps> = ({ title, description }) => {
         maxOpacity: 0.45 * depth, // slightly increased max opacity for denser belt glow
         isIdle: true,
         depth: depth,
-        travelHeight: 0
+        travelHeight: 0,
+        colorType: Math.random() < 0.5 ? 'primary' : 'secondary'
       });
     }
 
@@ -123,7 +125,8 @@ const SkillColumn: React.FC<SkillColumnProps> = ({ title, description }) => {
             maxOpacity: 0.85 * depth, // deeper particles are dimmer
             isIdle: false,
             depth: depth,
-            travelHeight: travelHeight
+            travelHeight: travelHeight,
+            colorType: Math.random() < 0.5 ? 'primary' : 'secondary'
           });
         }
       }
@@ -156,7 +159,7 @@ const SkillColumn: React.FC<SkillColumnProps> = ({ title, description }) => {
           ctx.arc(currentX, currentY, p.size, 0, Math.PI * 2);
           // Scale opacity based strictly on hoverProgress (invisible by default, fades in on hover)
           ctx.globalAlpha = p.opacity * hoverProgress;
-          ctx.fillStyle = palette.primary;
+          ctx.fillStyle = p.colorType === 'primary' ? palette.primary : palette.secondary;
           ctx.fill();
           ctx.restore();
           return true;
@@ -187,7 +190,7 @@ const SkillColumn: React.FC<SkillColumnProps> = ({ title, description }) => {
           ctx.beginPath();
           ctx.arc(currentX, p.y, p.size, 0, Math.PI * 2);
           ctx.globalAlpha = p.opacity;
-          ctx.fillStyle = palette.primary;
+          ctx.fillStyle = p.colorType === 'primary' ? palette.primary : palette.secondary;
           ctx.fill();
           ctx.restore();
           
@@ -204,7 +207,7 @@ const SkillColumn: React.FC<SkillColumnProps> = ({ title, description }) => {
       cancelAnimationFrame(animationId);
       resizeObserver.disconnect();
     };
-  }, [palette.primary]); // depend on palette.primary to update colors when theme changes
+  }, [palette.primary, palette.secondary]); // depend on palette.primary to update colors when theme changes
 
   return (
     <div

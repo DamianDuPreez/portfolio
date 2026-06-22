@@ -67,7 +67,7 @@ const getWaveColor = (z: number, timeOfDay: string): string => {
   return `${r}, ${g}, ${b}`;
 };
 
-const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "" }) => {
+const InteractiveCreditCard: React.FC<{ className?: string; disabled?: boolean }> = ({ className = "", disabled = false }) => {
   const { activeTimeOfDay } = useTheme();
   const ref = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -75,6 +75,13 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
   // Mouse position values for 3D tilt
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+
+  useEffect(() => {
+    if (disabled) {
+      x.set(0);
+      y.set(0);
+    }
+  }, [disabled, x, y]);
 
   // Smooth out the movement with springs
   const mouseXSpring = useSpring(x, { stiffness: 60, damping: 25, mass: 1 });
@@ -84,6 +91,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (disabled) return;
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     
@@ -95,6 +103,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
   };
 
   const handleMouseLeave = () => {
+    if (disabled) return;
     x.set(0);
     y.set(0);
   };
@@ -156,8 +165,8 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         ctx.beginPath();
         
         // Draw the vertical wavy boundary, extending past the top and bottom of the card to hide any corners
-        const yStart = -35;
-        const yEnd = height + 45;
+        const yStart = -80;
+        const yEnd = height + 80;
         
         // Start shape above the top-left edge
         ctx.moveTo(0, yStart - 25);
@@ -194,7 +203,7 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
           const scale = perspective / (perspective + zProj);
 
           const screenX = x3d * scale;
-          const screenY = yCenter + yProj * scale;
+          const screenY = yCenter + yProj * scale + 25;
 
           ctx.lineTo(screenX, screenY);
           
@@ -204,8 +213,8 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         }
 
         // Close the path far below the bottom-left corner and loop back to top-left to avoid visible edges
-        ctx.lineTo(0, yEnd + 25);
-        ctx.lineTo(0, yStart - 25);
+        ctx.lineTo(0, yEnd + 50);
+        ctx.lineTo(0, yStart - 50);
         ctx.closePath();
 
         // Create linear gradient from left edge (x=0) to rightmost boundary of this slice (maxScreenX)
@@ -263,6 +272,11 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
         {/* Top Section: Chip & Contactless */}
         <div className="relative z-20 flex justify-between items-center mt-6 ml-4">
           <div className="flex items-center gap-3">
+            {/* Inline SVG Contactless Wave Symbol */}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-6 w-6 text-slate-700 opacity-90 shrink-0 translate-y-[2.5px]">
+              <path d="M5 8.5c.83 1.17.83 2.83 0 4M8 6c1.66 2.17 1.66 5.83 0 8M11 3.5c2.5 3.17 2.5 8.83 0 12" />
+            </svg>
+
             {/* High-Fidelity Geometric EMV Chip */}
             <div className="w-[36px] h-[26px] rounded-[4px] bg-[#cbd5e1] border-[0.5px] border-white/20 relative overflow-hidden flex items-center justify-center opacity-95">
                {/* Divider Grid */}
@@ -277,11 +291,6 @@ const InteractiveCreditCard: React.FC<{ className?: string }> = ({ className = "
                   <div className="w-1 h-1 border-[0.5px] border-black/15 rounded-full" />
                </div>
             </div>
-
-            {/* Inline SVG Contactless Wave Symbol */}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-6 w-6 text-slate-700 opacity-90 shrink-0">
-              <path d="M5 8.5c.83 1.17.83 2.83 0 4M8 6c1.66 2.17 1.66 5.83 0 8M11 3.5c2.5 3.17 2.5 8.83 0 12" />
-            </svg>
           </div>
         </div>
 

@@ -66,6 +66,14 @@ const getWaveColor = (z: number, timeOfDay: string): string => {
   return `${r}, ${g}, ${b}`;
 };
 
+const mixWithWhite = (rgbStr: string, amount: number): string => {
+  const parts = rgbStr.split(',').map(x => parseInt(x.trim(), 10));
+  const r = Math.round(parts[0] + (255 - parts[0]) * amount);
+  const g = Math.round(parts[1] + (255 - parts[1]) * amount);
+  const b = Math.round(parts[2] + (255 - parts[2]) * amount);
+  return `${r}, ${g}, ${b}`;
+};
+
 const PastelPencilBackground: React.FC = () => {
   const { activeTimeOfDay } = useTheme();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -86,10 +94,11 @@ const PastelPencilBackground: React.FC = () => {
 
     // 1. Draw base theme gradient
     const baseGrad = ctx.createLinearGradient(0, 0, width, 0);
-    const c0 = getWaveColor(0.0, activeTimeOfDay);
-    const c1 = getWaveColor(0.35, activeTimeOfDay);
-    const c2 = getWaveColor(0.7, activeTimeOfDay);
-    const c3 = getWaveColor(1.0, activeTimeOfDay);
+    const blendVal = 0.42;
+    const c0 = mixWithWhite(getWaveColor(0.0, activeTimeOfDay), blendVal);
+    const c1 = mixWithWhite(getWaveColor(0.35, activeTimeOfDay), blendVal);
+    const c2 = mixWithWhite(getWaveColor(0.7, activeTimeOfDay), blendVal);
+    const c3 = mixWithWhite(getWaveColor(1.0, activeTimeOfDay), blendVal);
     
     baseGrad.addColorStop(0, `rgb(${c0})`);
     baseGrad.addColorStop(0.3, `rgb(${c1})`);
@@ -100,7 +109,7 @@ const PastelPencilBackground: React.FC = () => {
     ctx.fillRect(0, 0, width, height);
 
     // Soften with a semi-transparent white wash to create a pastel look
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.50)';
     ctx.fillRect(0, 0, width, height);
 
     // 2. Draw pencil/pastel streaks matching the active theme (fixed amount)
@@ -118,8 +127,8 @@ const PastelPencilBackground: React.FC = () => {
       const xPercent = x / width;
       // Sample color slightly offset to mix color streaks (e.g. orange in yellow zone)
       const offsetPercent = Math.min(1.0, Math.max(0.0, xPercent + (Math.random() - 0.5) * 0.25));
-      const color = getWaveColor(offsetPercent, activeTimeOfDay);
-      const opacity = 0.05 + Math.random() * 0.08;
+      const color = mixWithWhite(getWaveColor(offsetPercent, activeTimeOfDay), blendVal);
+      const opacity = 0.03 + Math.random() * 0.05;
 
       ctx.strokeStyle = `rgba(${color}, ${opacity})`;
       ctx.lineWidth = thickness;

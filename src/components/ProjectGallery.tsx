@@ -13,7 +13,7 @@ const initialProjects = [
     title: 'CodeSolve Dashboard Showcase',
     category: 'Web App',
     image: '',
-    description: 'A high-end client analytics and management infrastructure platform featuring reactive data visualizations, real-time performance tracking, and dynamic security access protocols. Built to demonstrate state management optimization and seamless backend data synchronization.',
+    description: 'A high-end client analytics and management infrastructure platform featuring reactive data visualizations, real-time performance tracking, and dynamic security access protocols. Built to demonstrate advanced state management optimization and seamless backend data architecture.',
     link: 'https://codesolve-dashboard-showcase.web.app'
   },
   { id: 5, title: '', category: '', image: '', description: '' },
@@ -30,6 +30,7 @@ const ProjectGallery: React.FC = () => {
   const [direction, setDirection] = useState(1);
   const [selectedProject, setSelectedProject] = useState<typeof initialProjects[0] | null>(null);
   
+  const modalIsOpen = selectedProject !== null;
   const N = initialProjects.length;
 
   const handleNext = () => {
@@ -66,6 +67,10 @@ const ProjectGallery: React.FC = () => {
 
   const getFlexGrow = (vIndex: number) => {
     const defaults = [2000, 400, 200, 100, 20, 20, 20];
+
+    if (modalIsOpen) {
+      return defaults[vIndex];
+    }
 
     if (hoveredIndex === 0) {
       if (vIndex === 0) return 2300;
@@ -141,7 +146,11 @@ const ProjectGallery: React.FC = () => {
         {/* Asymmetrical Accordion Carousel */}
         <div 
           className="flex w-full h-[400px] md:h-[520px] gap-3 overflow-hidden py-4 relative"
-          onMouseLeave={() => setHoveredIndex(null)}
+          onMouseLeave={() => {
+            if (!modalIsOpen) {
+              setHoveredIndex(null);
+            }
+          }}
         >
           <AnimatePresence custom={direction}>
             {renderedProjects.map((project, visualIndex) => {
@@ -174,11 +183,13 @@ const ProjectGallery: React.FC = () => {
                   }}
                   onClick={() => handleCardClick(project, visualIndex)}
                   onMouseEnter={() => {
-                    setHoveredIndex(visualIndex);
+                    if (!modalIsOpen) {
+                      setHoveredIndex(visualIndex);
+                    }
                   }}
-                  className={`relative h-full overflow-hidden cursor-pointer rounded-xl bg-slate-100 dark:bg-gray-900 ${
+                  className={`relative h-full overflow-hidden rounded-xl bg-slate-100 dark:bg-gray-900 ${
                     isHero ? 'w-full md:w-auto' : 'hidden md:block'
-                  }`}
+                  } ${modalIsOpen ? 'cursor-default pointer-events-none' : 'cursor-pointer'}`}
                 >
                   
                   {/* Image Mask */}
@@ -193,10 +204,10 @@ const ProjectGallery: React.FC = () => {
                           className={`relative z-10 pointer-events-auto flex items-center justify-center w-full h-full transition-all duration-[600ms] ease-in-out origin-center ${
                             isHero 
                               ? 'scale-90 md:scale-100 opacity-100' 
-                              : 'scale-50 md:scale-55 opacity-60 hover:opacity-90'
+                              : `scale-50 md:scale-55 opacity-60 ${!modalIsOpen ? 'hover:opacity-90' : ''}`
                           }`}
                         >
-                          <InteractiveCreditCard />
+                          <InteractiveCreditCard disabled={modalIsOpen} />
                         </div>
                       </div>
                     ) : (
@@ -286,7 +297,7 @@ const ProjectGallery: React.FC = () => {
 
                     {/* Floating Credit Card on top */}
                     <div className="relative z-10 pointer-events-auto flex items-center justify-center w-full h-full">
-                      <InteractiveCreditCard />
+                      <InteractiveCreditCard disabled={true} />
                     </div>
                   </div>
                 ) : (
@@ -322,23 +333,21 @@ const ProjectGallery: React.FC = () => {
                 <p className="text-lg text-slate-600 dark:text-gray-300 mb-8 leading-relaxed">
                   {selectedProject.description}
                   <br /><br />
-                  This project features a fully responsive design, seamless animations, and is optimized for peak performance across all devices. We implemented custom solutions to handle complex state management, real-time data synchronization, and secure backend processing to deliver a flawless user experience.
+                  This project features a fully responsive design and fluid animations optimized for peak performance across all devices. I engineered custom solutions to handle complex state rendering, low-latency data synchronization, and secure backend processing to deliver a flawless user experience.
                 </p>
-                
-                <div className="flex gap-4">
-                  <a 
-                    href={selectedProject.link || '#'}
-                    onClick={(e) => {
-                      if (!selectedProject.link) e.preventDefault();
-                    }}
-                    target={selectedProject.link ? "_blank" : undefined}
-                    rel={selectedProject.link ? "noopener noreferrer" : undefined}
-                    className="inline-flex items-center justify-center px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg transition-colors gap-2 shadow-sm"
-                  >
-                    Visit Website
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                </div>
+                {selectedProject.link && (
+                  <div className="flex gap-4">
+                    <a 
+                      href={selectedProject.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg transition-colors gap-2 shadow-sm"
+                    >
+                      Visit Website
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>
