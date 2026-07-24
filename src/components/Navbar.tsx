@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Sun, Moon, Menu, X, Code2, Clock, Sunrise, Sunset, CloudMoon, Check } from 'lucide-react';
+import { Sun, Moon, Menu, X, Code2, Clock, Sunrise, Sunset, CloudMoon, Check, FileText, Eye, Download, ChevronDown } from 'lucide-react';
 import { useTheme, getTimeDisplayName } from '../context/ThemeContext';
 import type { TimeOfDay } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -17,6 +17,71 @@ const getIcon = (time: TimeOfDay | Exclude<TimeOfDay, 'auto'>) => {
     case 'night': return <Moon className="w-4 h-4" />;
     default: return <Sun className="w-4 h-4" />;
   }
+};
+
+const CVDropdown: React.FC = () => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setDropdownOpen(!dropdownOpen)}
+        className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-gray-800 transition-colors"
+        aria-label="CV Options"
+        aria-expanded={dropdownOpen}
+      >
+        <FileText className="w-4 h-4 text-brand-500" />
+        <span>CV</span>
+        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+      </motion.button>
+
+      <AnimatePresence>
+        {dropdownOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-900 border border-slate-100 dark:border-gray-800 overflow-hidden z-50 py-1"
+          >
+            <a
+              href="/CV.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setDropdownOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-gray-300 hover:text-brand-500 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/10 transition-colors"
+            >
+              <Eye className="w-4 h-4 text-slate-500 dark:text-gray-400" />
+              <span>View CV</span>
+            </a>
+            <a
+              href="/CV.pdf"
+              download="CV.pdf"
+              onClick={() => setDropdownOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-gray-300 hover:text-brand-500 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/10 transition-colors"
+            >
+              <Download className="w-4 h-4 text-slate-500 dark:text-gray-400" />
+              <span>Download PDF</span>
+            </a>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 };
 
 const ThemeDropdown: React.FC = () => {
@@ -106,7 +171,7 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {navLinks.map((link) => (
               <a
                 key={link.name}
@@ -117,6 +182,7 @@ const Navbar: React.FC = () => {
               </a>
             ))}
 
+            <CVDropdown />
             <ThemeDropdown />
 
             <a href="#contact" className="px-5 py-2 rounded-md bg-slate-900 text-white dark:bg-white dark:text-gray-900 font-medium text-sm hover:opacity-90 border border-transparent hover:border-brand-500 dark:hover:border-brand-500 transition-all duration-[1500ms]">
@@ -125,7 +191,7 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center gap-4">
+          <div className="md:hidden flex items-center gap-2 sm:gap-4">
             <ThemeDropdown />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -151,6 +217,33 @@ const Navbar: React.FC = () => {
                 {link.name}
               </a>
             ))}
+
+            {/* Mobile CV Options */}
+            <div className="pt-2 pb-1 border-t border-gray-100 dark:border-gray-800 my-2">
+              <div className="px-3 py-1 text-xs font-semibold text-slate-400 dark:text-gray-500 uppercase tracking-wider">
+                Curriculum Vitae
+              </div>
+              <a
+                href="/CV.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-900"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Eye className="w-5 h-5 text-brand-500" />
+                View CV
+              </a>
+              <a
+                href="/CV.pdf"
+                download="CV.pdf"
+                className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-900"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Download className="w-5 h-5 text-brand-500" />
+                Download PDF
+              </a>
+            </div>
+
             <a
               href="#contact"
               className="block mt-4 text-center px-5 py-3 rounded-md bg-slate-900 text-white dark:bg-white dark:text-gray-900 font-medium border border-transparent hover:border-brand-500 transition-all duration-300"
