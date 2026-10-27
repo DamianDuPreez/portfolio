@@ -369,7 +369,7 @@ const ProjectGallery: React.FC = () => {
                       </span>
                       {selectedProject.status && (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium rounded-full border border-slate-200 dark:border-gray-700 text-slate-600 dark:text-gray-300">
-                          <span className={`w-1.5 h-1.5 rounded-full ${selectedProject.status === 'Live' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                          <span className={`w-1.5 h-1.5 rounded-full ${selectedProject.status.startsWith('Live') ?'bg-emerald-500' : 'bg-amber-500'}`} />
                           {selectedProject.status}
                         </span>
                       )}
@@ -421,7 +421,7 @@ const ProjectGallery: React.FC = () => {
                     </motion.div>
 
                     {selectedProject.link && (
-                      <motion.div variants={fadeUp} className="flex gap-4 mt-10">
+                      <motion.div variants={fadeUp} className="flex flex-wrap gap-3 mt-10">
                         <a
                           href={selectedProject.link}
                           target="_blank"
@@ -431,6 +431,17 @@ const ProjectGallery: React.FC = () => {
                           {selectedProject.linkLabel ?? 'Visit Website'}
                           <ExternalLink className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                         </a>
+                        {selectedProject.secondaryLink && (
+                          <a
+                            href={selectedProject.secondaryLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group inline-flex items-center justify-center px-6 py-3 border border-slate-200 dark:border-gray-700 text-slate-700 dark:text-gray-200 hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 font-medium rounded-lg transition-colors gap-2"
+                          >
+                            {selectedProject.secondaryLinkLabel}
+                            <ExternalLink className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                          </a>
+                        )}
                       </motion.div>
                     )}
                   </motion.div>
