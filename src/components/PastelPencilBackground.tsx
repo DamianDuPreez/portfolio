@@ -74,7 +74,8 @@ const mixWithWhite = (rgbStr: string, amount: number): string => {
   return `${r}, ${g}, ${b}`;
 };
 
-const PastelPencilBackground: React.FC = () => {
+// `reverse` mirrors the gradient and stroke direction so neighbouring cards read as distinct
+const PastelPencilBackground: React.FC<{ reverse?: boolean }> = ({ reverse = false }) => {
   const { activeTimeOfDay } = useTheme();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -93,7 +94,7 @@ const PastelPencilBackground: React.FC = () => {
     canvas.height = height;
 
     // 1. Draw base theme gradient
-    const baseGrad = ctx.createLinearGradient(0, 0, width, 0);
+    const baseGrad = reverse ? ctx.createLinearGradient(width, 0, 0, 0) : ctx.createLinearGradient(0, 0, width, 0);
     const blendVal = 0.42;
     const c0 = mixWithWhite(getWaveColor(0.0, activeTimeOfDay), blendVal);
     const c1 = mixWithWhite(getWaveColor(0.35, activeTimeOfDay), blendVal);
@@ -114,7 +115,7 @@ const PastelPencilBackground: React.FC = () => {
 
     // 2. Draw pencil/pastel streaks matching the active theme (fixed amount)
     const numLines = 8000;
-    const angle = -Math.PI / 4.5;
+    const angle = reverse ? -Math.PI + Math.PI / 4.5 : -Math.PI / 4.5;
     const cosA = Math.cos(angle);
     const sinA = Math.sin(angle);
 
@@ -124,7 +125,7 @@ const PastelPencilBackground: React.FC = () => {
       const length = 12 + Math.random() * 25;
       const thickness = 0.5 + Math.random() * 1.5;
       
-      const xPercent = x / width;
+      const xPercent = reverse ? 1 - x / width : x / width;
       // Sample color slightly offset to mix color streaks (e.g. orange in yellow zone)
       const offsetPercent = Math.min(1.0, Math.max(0.0, xPercent + (Math.random() - 0.5) * 0.25));
       const color = mixWithWhite(getWaveColor(offsetPercent, activeTimeOfDay), blendVal);
@@ -160,7 +161,7 @@ const PastelPencilBackground: React.FC = () => {
       ctx.fillRect(0, 0, width, height);
       ctx.globalCompositeOperation = 'source-over';
     }
-  }, [activeTimeOfDay]);
+  }, [activeTimeOfDay, reverse]);
 
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden">
