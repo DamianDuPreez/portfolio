@@ -25,25 +25,29 @@ const HeroSection: React.FC = () => {
         {/* Left Side: Text Content */}
         <div className="w-full md:w-1/2 pt-20 md:pt-0 z-10 pointer-events-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            initial="hidden"
+            animate="show"
+            variants={{ show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } } }}
             className="p-6 md:p-8 -ml-6 md:-ml-8 rounded-lg relative"
           >
-            <h2 className="text-brand-500 font-semibold tracking-wide uppercase text-sm mb-3">
+            <motion.h2 variants={reveal} className="text-brand-500 font-semibold tracking-wide uppercase text-sm mb-3">
               Freelance Web & App Designer
-            </h2>
+            </motion.h2>
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-slate-900 dark:text-white">
-              Crafting Digital <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-brand-600 transition-all duration-[1500ms] ease-in-out" style={{ backgroundImage: `linear-gradient(to right, var(--brand-500), var(--brand-600))` }}>
-                Experiences
+              <span className="block overflow-y-clip overflow-x-visible pb-1">
+                <motion.span variants={lineReveal} className="block">Crafting Digital</motion.span>
+              </span>
+              <span className="block overflow-y-clip overflow-x-visible pb-2">
+                <motion.span variants={lineReveal} className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-brand-600 transition-all duration-[1500ms] ease-in-out" style={{ backgroundImage: `linear-gradient(to right, var(--brand-500), var(--brand-600))` }}>
+                  Experiences
+                </motion.span>
               </span>
             </h1>
-            <p className="text-xl text-slate-700 dark:text-gray-300 mb-8 max-w-lg leading-relaxed font-medium">
+            <motion.p variants={reveal} className="text-xl text-slate-700 dark:text-gray-300 mb-8 max-w-lg leading-relaxed font-medium">
               I specialize in creating premium, dynamic websites and applications powered by cutting-edge AI tools and modern web technologies.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4">
+            </motion.p>
+
+            <motion.div variants={reveal} className="flex flex-col sm:flex-row gap-4">
               <a
                 href="#projects"
                 className="group inline-flex justify-center items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-600 hover:bg-brand-700 transition-colors whitespace-nowrap"
@@ -57,15 +61,44 @@ const HeroSection: React.FC = () => {
               >
                 Contact Me
               </a>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
 
       </div>
-      
 
+      {/* Scroll cue */}
+      <motion.a
+        href="#about"
+        aria-label="Scroll to About"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.4, duration: 0.8 }}
+        className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex-col items-center gap-2 text-slate-400 dark:text-gray-500 hover:text-brand-500 transition-colors"
+      >
+        <span className="text-[10px] font-semibold uppercase tracking-[0.25em]">Scroll</span>
+        <span className="w-[22px] h-[34px] rounded-full border-2 border-current flex justify-center pt-1.5">
+          <motion.span
+            className="w-1 h-1.5 rounded-full bg-current"
+            animate={{ y: [0, 10, 0], opacity: [1, 0.2, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </span>
+      </motion.a>
     </section>
   );
+};
+
+const ease = [0.22, 1, 0.36, 1] as const;
+
+const reveal = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
+};
+
+const lineReveal = {
+  hidden: { y: '105%' },
+  show: { y: '0%', transition: { duration: 0.9, ease } },
 };
 
 export default HeroSection;

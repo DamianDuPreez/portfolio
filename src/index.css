@@ -5,6 +5,12 @@
 @theme {
   --color-brand-500: var(--brand-500);
   --color-brand-600: var(--brand-600);
+  /* Derived shades so hover/tint utilities follow the time-of-day palette */
+  --color-brand-50: color-mix(in oklab, var(--brand-500) 8%, white);
+  --color-brand-100: color-mix(in oklab, var(--brand-500) 18%, white);
+  --color-brand-400: color-mix(in oklab, var(--brand-500) 80%, white);
+  --color-brand-700: color-mix(in oklab, var(--brand-600) 82%, black);
+  --color-brand-900: color-mix(in oklab, var(--brand-600) 55%, black);
   --font-sans: 'Inter', system-ui, sans-serif;
 }
 
@@ -22,11 +28,29 @@
     --brand-600: #4f46e5;
   }
 
+  html {
+    scroll-behavior: smooth;
+    /* Keep anchored sections clear of the fixed navbar */
+    scroll-padding-top: 4rem;
+  }
+
   body {
     @apply bg-white text-slate-900 transition-all duration-[1500ms] ease-in-out;
+    -webkit-font-smoothing: antialiased;
   }
 
   .dark body {
     @apply bg-gray-950 text-gray-100;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brand-500);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }

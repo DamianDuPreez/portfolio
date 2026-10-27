@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Sun, Moon, Menu, X, Code2, Clock, Sunrise, Sunset, CloudMoon, Check, FileText, Eye, Download, ChevronDown } from 'lucide-react';
 import { useTheme, getTimeDisplayName } from '../context/ThemeContext';
 import type { TimeOfDay } from '../context/ThemeContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 
 const times: TimeOfDay[] = ['auto', 'pre-dawn', 'sunrise', 'daytime', 'sunset', 'dusk', 'night'];
 
@@ -154,6 +154,16 @@ const ThemeDropdown: React.FC = () => {
 
 const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const navLinks = [
     { name: 'About', href: '#about' },
@@ -161,7 +171,16 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    <nav className="fixed top-0 w-full z-50 transition-all duration-[1500ms] bg-white/80 dark:bg-gray-950/80 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-800">
+    <nav className={`fixed top-0 w-full z-50 transition-[background-color,border-color,box-shadow] duration-500 border-b ${
+      scrolled || mobileMenuOpen
+        ? 'bg-white/80 dark:bg-gray-950/80 backdrop-blur-md shadow-sm border-gray-200 dark:border-gray-800'
+        : 'bg-transparent border-transparent'
+    }`}>
+      {/* Scroll progress */}
+      <motion.div
+        className="absolute left-0 right-0 bottom-[-1px] h-[2px] origin-left"
+        style={{ scaleX: progress, background: 'linear-gradient(to right, var(--brand-500), var(--brand-600))' }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -176,9 +195,10 @@ const Navbar: React.FC = () => {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white transition-colors font-medium text-sm"
+                className="group relative py-1 text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white transition-colors font-medium text-sm"
               >
                 {link.name}
+                <span className="absolute left-0 -bottom-0.5 h-[2px] w-full rounded-full bg-brand-500 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" />
               </a>
             ))}
 

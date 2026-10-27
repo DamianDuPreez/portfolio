@@ -292,11 +292,18 @@ const AboutMe: React.FC = () => {
         {/* Minimalist 4-column typographic layout with lower opacity borders */}
         <div className="grid grid-cols-1 md:grid-cols-4 border-t border-b border-slate-200/40 dark:border-slate-800/40 divide-y md:divide-y-0 md:divide-x divide-slate-200/40 dark:divide-slate-800/40 relative z-10 overflow-hidden px-4 md:px-0">
           {services.map((service, index) => (
-            <SkillColumn 
-              key={index} 
-              title={service.title} 
-              description={service.description}
-            />
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <SkillColumn
+                title={service.title}
+                description={service.description}
+              />
+            </motion.div>
           ))}
         </div>
       </div>
